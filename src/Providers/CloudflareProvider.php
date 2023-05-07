@@ -22,6 +22,9 @@ class CloudflareProvider implements ProviderContract
     
     /** @var string $zone */
     private ?string $zone = null;
+        
+    /** @var string $ban_ip_expression */
+    private string $ban_ip_expression = '(ip.src eq :ip)';
     
     /**
      * Ban Ip
@@ -31,7 +34,7 @@ class CloudflareProvider implements ProviderContract
      */
     public function banIp(string $ip, array $params = [])
     { 
-        $expression = 'ip.src eq ' . $ip;
+        $expression = str_replace(":ip", $ip, $this->ban_ip_expression);
 
         $filter_id = $this->createFilter($expression);
 
@@ -58,7 +61,7 @@ class CloudflareProvider implements ProviderContract
      */
     public function unbanIp(string $ip, array $params = []) 
     { 
-
+       $filter_id = $this->getFilterbyExpression($this->ban_ip_expression.$ip);
     }
     
     /**
@@ -183,10 +186,11 @@ class CloudflareProvider implements ProviderContract
      */
     private function createFilter($expression)
     {
-        
+        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters";
+
         $response =
 
-        Http::withHeaders($this->getHeaders())->post("{$this->url}zones/{$this->getZone()}/filters",[
+        Http::withHeaders($this->getHeaders())->post($cloudflare_endpoint,[
             'expression' => $expression
         ]);
 
@@ -201,6 +205,104 @@ class CloudflareProvider implements ProviderContract
         if($response->successful()){
             return $response->collect();
         }
+
+    }
+
+    private function getFilterById($filter_id): string
+    {
+
+        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters/{$filter_id}";
+
+        $response = 
+        
+        Http::withHeaders($this->getHeaders())->get($cloudflare_endpoint);
+
+        // {
+        //   "result": {
+        //     "id": "<FILTER_ID>",
+        //     "paused": false,
+        //     "description": "Login from office",
+        //     "expression": "ip.src eq 93.184.216.0 and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\")"
+        //   },
+        //   "success": true,
+        //   "errors": [],
+        //   "messages": []
+        // }
+
+        if($response->successful()){
+            return $response->collect()->result->id;
+        }
+
+    }
+
+    private function getFilterbyExpression($expression): ?string
+    {
+
+        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters";
+
+        $response = $this->listPaginator($cloudflare_endpoint);
+
+        // {
+        //   "result": {
+                //     "id": "<FILTER_ID>",
+                //     "paused": false,
+                //     "description": "Login from office",
+                //     "expression": "ip.src eq 93.184.216.0 and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\")"
+        //   },
+        //   "success": true,
+        //   "errors": [],
+        //   "messages": []
+        // }
+
+
+        if ($response->successful()) {
+            
+            //Iterate through collection and search for expression;
+            $paginator = $response->collect()->result_info;
+
+            for($page = 1; $page <= $paginator->total_pages; $page++){
+
+                $response = $this->listPaginator($cloudflare_endpoint, $page);
+
+                foreach($response->collect()->result as $filter){
+
+                    if($filter->expression == $expression){
+                        return $filter->id;
+                    }
+
+                }
+
+            }
+            
+        }
+
+        return null;
+    }
+
+    private function listPaginator($url, $page = 1, $per_page = 50)
+    {
+        return
+
+        Http::withHeaders($this->getHeaders())->get($url, [
+            'page' => $page,
+            'per_page' => $per_page
+        ]);
+    }
+
+    private function hydratePagination($response)
+    {
+
+        $pagination = $response->collect()->result_info;
+
+        $pagination = [
+            'total_pages' => $pagination->total_pages,
+            'count' => $pagination->count,
+            'per_page' => $pagination->per_page,
+            'page' => $pagination->page,
+            'total_count' => $pagination->total_count,
+        ];
+
+        return $pagination;
 
     }
 

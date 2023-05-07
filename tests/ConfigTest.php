@@ -2,15 +2,13 @@
 
 namespace Turbo124\BotLicker\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Illuminate\Support\Facades\Config;
+use Orchestra\Testbench\TestCase;
 use Turbo124\BotLicker\BotLicker;
-use Turbo124\BotLicker\BotLickerServiceProvider;
 use Turbo124\BotLicker\Facades\Firewall;
+use Turbo124\BotLicker\BotLickerServiceProvider;
 
-class ConfigTest extends \Orchestra\Testbench\TestCase
+class ConfigTest extends TestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -27,7 +25,7 @@ class ConfigTest extends \Orchestra\Testbench\TestCase
     protected function getEnvironmentSetUp($app)
     {
         // perform environment setup
-        
+
         $filename = __DIR__."/../.env";
         if (! file_exists($filename)) {
             throw new \Exception("could not load env vars ".__DIR__);
@@ -58,7 +56,49 @@ class ConfigTest extends \Orchestra\Testbench\TestCase
     {
 
         $bot = new BotLicker();
-        $bot->ban('101.55.31.114');
+        $result = $bot->ban('101.55.31.19');
 
+        $this->assertTrue($result);
     }
+
+    public function testRemoveIp()
+    {
+        $bot = new BotLicker();
+        $result = $bot->unban('101.55.31.120');
+
+        $this->assertTrue($result);
+    }
+
+    public function testAddChallengeIP()
+    {
+        $bot = new BotLicker();
+        $result = $bot->challenge('101.55.32.119');
+
+        $this->assertTrue($result);
+    }
+
+    public function testRemoveChallengeIP()
+    {
+        $bot = new BotLicker();
+        $result = $bot->challenge('101.55.32.120');
+
+        $this->assertTrue($result);
+    }
+
+    public function testAddCountryBan()
+    {
+        $bot = new BotLicker();
+        $result = $bot->banCountry('DE');
+
+        $this->assertTrue($result);
+    }
+
+    public function testAddCountryUnBan()
+    {
+        $bot = new BotLicker();
+        $result = $bot->unbanCountry('DE');
+
+        $this->assertTrue($result);
+    }
+
 }

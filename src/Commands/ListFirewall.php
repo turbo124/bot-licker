@@ -18,5 +18,13 @@ class ListFirewall extends Command
 
     public function handle()
     {
+
+
+        // $this->table(
+        //     ['Name', 'Email'],
+        //     User::all(['name', 'email'])->toArray()
+        // );
+
+
     }
 }

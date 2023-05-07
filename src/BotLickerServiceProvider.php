@@ -2,9 +2,9 @@
 
 namespace Turbo124\BotLicker;
 
-use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
-use Turbo124\BotLicker\Facades\Firewall;
+use Illuminate\Console\Scheduling\Schedule;
+use Turbo124\BotLicker\EventServiceProvider;
 
 class BotLickerServiceProvider extends ServiceProvider
 {
@@ -36,6 +36,15 @@ class BotLickerServiceProvider extends ServiceProvider
         $this->app->bind('bot-licker', function () {
             return new BotLicker();
         });
+
+        $this->app->booted(
+            function () {
+                $schedule = app(Schedule::class);
+                // $schedule->job(new BatchMetrics())->everyFiveMinutes()->withoutOverlapping()->name('beacon-batch-job')->onOneServer();
+            }
+        );
+
+        $this->app->register(EventServiceProvider::class);
 
     }
 }

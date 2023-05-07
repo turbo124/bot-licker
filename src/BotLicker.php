@@ -14,11 +14,11 @@ class BotLicker
      *
      * @param  string $ip
      * @param  array $params
-     * @return void
+     * @return bool
      */
-    public function ban(string $ip, array $params = [])
+    public function ban(string $ip, array $params = []): bool
     {
-        $this->getProvider()->banIp($ip, $params);
+        return $this->getProvider()->banIp($ip, $params);
     }
 
     /**
@@ -26,11 +26,11 @@ class BotLicker
      *
      * @param  string $ip
      * @param  array $params
-     * @return void
+     * @return bool
      */
-    public function unban(string $ip, array $params = [])
+    public function unban(string $ip, array $params = []): bool
     {
-        $this->getProvider()->unbanIp($ip, $params);
+        return $this->getProvider()->unbanIp($ip, $params);
     }
     
     /**
@@ -38,11 +38,11 @@ class BotLicker
      *
      * @param  string $ip
      * @param  array $params
-     * @return void
+     * @return bool
      */
-    public function challenge(string $ip, array $params = [])
+    public function challenge(string $ip, array $params = []): bool
     {
-        $this->getProvider()->challengeIp($ip, $params);
+        return $this->getProvider()->challengeIp($ip, $params);
     }
     
     /**
@@ -50,13 +50,37 @@ class BotLicker
      *
      * @param  string $ip
      * @param  array $params
-     * @return void
+     * @return bool
      */
-    public function unchallenge(string $ip, array $params = [])
+    public function unchallenge(string $ip, array $params = []): bool
     {
-        $this->getProvider()->unchallengeIp($ip, $params);
+        return $this->getProvider()->unchallengeIp($ip, $params);
     }
     
+    /**
+     * Ban Country 
+     *
+     * @param  string $iso_3166_2
+     * @param  array $params
+     * @return bool
+     */
+    public function banCountry(string $iso_3166_2, array $params = []): bool
+    {
+        return $this->getProvider()->banCountry($iso_3166_2, $params);
+    }
+
+    /**
+     * UnBan Country 
+     *
+     * @param  string $iso_3166_2
+     * @param  array $params
+     * @return bool
+     */
+    public function unbanCountry(string $iso_3166_2, array $params = []): bool
+    {
+        return $this->getProvider()->unbanCountry($iso_3166_2, $params);
+    }
+
     /**
      * Set Provider
      *

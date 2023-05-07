@@ -1,0 +1,23 @@
+{
+    "name": "turbo124/bot-licker",
+    "description": "Package for Laravel to block IPs at the network edge",
+    "type": "library",
+    "require": {
+        "illuminate/support": "^9|^10"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.1"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Turbo124\\BotLicker\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "David Bomba",
+            "email": "turbo124@gmail.com"
+        }
+    ]
+}

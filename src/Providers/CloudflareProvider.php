@@ -273,9 +273,9 @@ class CloudflareProvider implements ProviderContract
     /**
      * Get all firewall rules
      *
-     * @return Illuminate\Support\Collection
+     * @return array
      */
-    public function getRules(): \Illuminate\Support\Collection
+    public function getRules(): array
     {
 
         $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters";

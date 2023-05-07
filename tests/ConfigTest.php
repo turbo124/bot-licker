@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use Turbo124\BotLicker\Facades\Firewall;
 use Turbo124\BotLicker\Commands\FirewallRules;
 use Turbo124\BotLicker\BotLickerServiceProvider;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class ConfigTest extends TestCase
 {
@@ -58,9 +59,12 @@ class ConfigTest extends TestCase
             $artisan->add(app(FirewallRules::class));
         });
 
-        $x = Artisan::call('firewall:rules');
+        $output = new BufferedOutput();
         
-        echo print_r($x,1);
+        $x = Artisan::call('firewall:rules', [], $output);
+        
+        // echo print_r($output->fetch(),1);
+
     }
 
     /** @test */

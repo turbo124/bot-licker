@@ -21,4 +21,6 @@ interface ProviderContract
     public function banCountry(string $iso_3166_2, array $params = []);
 
     public function unbanCountry(string $iso_3166_2, array $params = []);
+
+    public function getRules();
 }

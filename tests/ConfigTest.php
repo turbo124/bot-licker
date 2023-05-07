@@ -4,7 +4,10 @@ namespace Turbo124\BotLicker\Tests;
 
 use Orchestra\Testbench\TestCase;
 use Turbo124\BotLicker\BotLicker;
+use Illuminate\Console\Application;
+use Illuminate\Support\Facades\Artisan;
 use Turbo124\BotLicker\Facades\Firewall;
+use Turbo124\BotLicker\Commands\FirewallRules;
 use Turbo124\BotLicker\BotLickerServiceProvider;
 
 class ConfigTest extends TestCase
@@ -45,6 +48,21 @@ class ConfigTest extends TestCase
 
 
     }
+
+
+    public function testPrintRules()
+    {
+
+
+        Application::starting(function ($artisan) {
+            $artisan->add(app(FirewallRules::class));
+        });
+
+        $x = Artisan::call('firewall:rules');
+        
+        echo print_r($x,1);
+    }
+
     /** @test */
     public function testValidInstanceType()
     {
@@ -100,5 +118,6 @@ class ConfigTest extends TestCase
 
         $this->assertTrue($result);
     }
+
 
 }

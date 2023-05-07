@@ -269,7 +269,24 @@ class CloudflareProvider implements ProviderContract
         return $this->updateFilter($filter, $updated_expression);
 
     }
+    
+    /**
+     * Get all firewall rules
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getRules(): \Illuminate\Support\Collection
+    {
 
+        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters";
+
+        $response = $this->listPaginator($cloudflare_endpoint);
+
+        if($response->successful())
+            return $response->collect()['result'];
+
+        throw new \Exception("Could not get rules " . $response->body());
+    }
     /**
      * Get or Create a new filter
      *
@@ -342,7 +359,7 @@ class CloudflareProvider implements ProviderContract
         ]);
 
         if($response->failed()) {
-            throw new \Exception("Could not create rule for {$ref}");
+            throw new \Exception("Could not create rule for {$ref} "  . $response->body());
         }
 
     }
@@ -375,7 +392,7 @@ class CloudflareProvider implements ProviderContract
             return $response->collect();
 
         } else {
-            throw new \Exception("Could not create filter for {$expression}");
+            throw new \Exception("Could not create filter for {$expression} "  . $response->body());
         }
 
     }
@@ -404,7 +421,7 @@ class CloudflareProvider implements ProviderContract
         if($response->successful()) {
             return true;
         } else {
-            throw new \Exception($response->body(), $response->status());
+            throw new \Exception($response->body() ." ". $response->body(), $response->status());
         }
 
     }

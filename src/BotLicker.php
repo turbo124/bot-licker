@@ -81,6 +81,13 @@ class BotLicker
         return $this->getProvider()->unbanCountry($iso_3166_2, $params);
     }
 
+    public function getRules()
+    {
+        
+        return $this->getProvider()->getRules();
+
+    }
+
     /**
      * Set Provider
      *

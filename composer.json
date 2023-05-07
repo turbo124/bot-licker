@@ -8,9 +8,11 @@
         "cloudflare"
     ],
     "require": {
+        "guzzlehttp/guzzle": "^7.5",
         "illuminate/support": "^9|^10"
     },
     "require-dev": {
+        "orchestra/testbench": "^8.5",
         "phpunit/phpunit": "^10.1"
     },
     "license": "MIT",
@@ -40,11 +42,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Turbo124\\BotLicker\\FirewallServiceProvider"
-            ],
-            "aliases": {
-                "Firewall": "Turbo124\\BotLicker\\FirewallFacade"
-            }
+                "Turbo124\\BotLicker\\BotLickerServiceProvider"
+            ]
         }
     }
 }

@@ -10,7 +10,7 @@ return [
     /**
      * The firewall provider to use
      */
-    'provider' => \Turbo124\BotLicker\Providers\Cloudflare::class,
+    'provider' => \Turbo124\BotLicker\Providers\CloudflareProvider::class,
 
     /**
      * Specific provider configuration

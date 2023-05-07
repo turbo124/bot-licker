@@ -25,6 +25,13 @@ class CloudflareProvider implements ProviderContract
         
     /** @var string $ban_ip_expression */
     private string $ban_ip_expression = '(ip.src eq :ip)';
+        
+    /** @var string $ban_filter_ref */
+    private string $ban_filter_ref = 'bot-licker.ban';
+        
+    /** @var string $challenge_filter_ref */
+    private string $challenge_filter_ref = 'bot-licker.challenge';
+    
     
     /**
      * Ban Ip
@@ -33,24 +40,16 @@ class CloudflareProvider implements ProviderContract
      * @return void
      */
     public function banIp(string $ip, array $params = [])
-    { 
+    {
+    
         $expression = str_replace(":ip", $ip, $this->ban_ip_expression);
 
-        $filter_id = $this->createFilter($expression);
+        $filter = $this->getFilter($expression, $this->ban_filter_ref);
+        
+        echo print_r($filter,1);
 
-        $response = 
+        $this->addIpToFilter($filter, $expression);
 
-        Http::post("{$this->url}zones/{$this->getZone()}/firewall/rules",[
-            "filter" => [
-                "id"=> $filter_id
-            ],
-            "action" => "block",
-            "description" => "Bot Licker rule on " . Carbon::now()->format('Y-m-d h:i:s')
-        ]);
-
-        if($response->successful()){
-            
-        }
     }
     
     /**
@@ -61,7 +60,13 @@ class CloudflareProvider implements ProviderContract
      */
     public function unbanIp(string $ip, array $params = []) 
     { 
-       $filter_id = $this->getFilterbyExpression($this->ban_ip_expression.$ip);
+
+        $expression = str_replace(":ip", $ip, $this->ban_ip_expression);
+
+        $filter = $this->getFilter($expression, $this->ban_filter_ref);
+
+        $this->removeIpFromFilter($filter, $expression);
+
     }
     
     /**
@@ -174,48 +179,61 @@ class CloudflareProvider implements ProviderContract
     {
         return [
             'X-Auth-Key' => config('bot-licker.cloudflare.api_key'),
-            'X-Auth-Email' => config('bot-licker.cloudflare.email')
+            'X-Auth-Email' => config('bot-licker.cloudflare.email'),
+            'Content-Type' => 'application/json',
+            // 'Authorization: Bearer' => config('bot-licker.cloudflare.api_key'),
         ];
     }
 
-    /**
-     * Create Filter
-     *
-     * @param  string $expression
-     * @return void
-     */
-    private function createFilter($expression)
+    private function addIpToFilter($filter, $expression)
     {
-        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters";
+        $current_expression = collect(explode("or", $filter['expression']));
 
-        $response =
+        $new_expression = $current_expression->push($expression)->implode("or");
 
-        Http::withHeaders($this->getHeaders())->post($cloudflare_endpoint,[
-            'expression' => $expression
-        ]);
+        $this->updateFilter($filter, $new_expression);
+    }
 
-            // "result": [
-            //     {
-            //       "id": "<FILTER_ID_1>",
-            //       "paused": false,
-            //       "expression": "ip.src eq 93.184.216.0"
-            //     },
-            // ]
+    private function removeIpFromFilter($filter, $removable_expression)
+    {
 
-        if($response->successful()){
-            return $response->collect();
-        }
+        $current_expression = collect(explode("or", $filter['expression']));
+
+        $new_expression = $current_expression->filter(function ($expression) use($removable_expression){
+            return $expression != $removable_expression;
+        });
+
+        $this->updateFilter($filter, $new_expression);
 
     }
 
-    private function getFilterById($filter_id): string
+    private function updateFilter($filter, $expression)
+    {
+        
+        $response =
+
+        Http::withHeaders($this->getHeaders())->put("{$this->url}zones/{$this->getZone()}/filters/{$filter['id']}", [
+            "expression" => $expression,
+            "description" => $filter['description'],
+            "ref" => $filter['ref'],
+        ]);
+
+    }
+
+
+    /**
+     * Get or create Filter
+     *
+     * @param  string $expression
+     * @param  string $filter_ref
+     * @return mixed
+     */
+    private function getFilter(string $expression, string $filter_ref): mixed
     {
 
-        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters/{$filter_id}";
+        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters";
 
-        $response = 
-        
-        Http::withHeaders($this->getHeaders())->get($cloudflare_endpoint);
+        $response = $this->listPaginator($cloudflare_endpoint);
 
         // {
         //   "result": {
@@ -229,54 +247,83 @@ class CloudflareProvider implements ProviderContract
         //   "messages": []
         // }
 
-        if($response->successful()){
-            return $response->collect()->result->id;
-        }
-
-    }
-
-    private function getFilterbyExpression($expression): ?string
-    {
-
-        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters";
-
-        $response = $this->listPaginator($cloudflare_endpoint);
-
-        // {
-        //   "result": {
-                //     "id": "<FILTER_ID>",
-                //     "paused": false,
-                //     "description": "Login from office",
-                //     "expression": "ip.src eq 93.184.216.0 and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\")"
-        //   },
-        //   "success": true,
-        //   "errors": [],
-        //   "messages": []
-        // }
-
 
         if ($response->successful()) {
-            
-            //Iterate through collection and search for expression;
-            $paginator = $response->collect()->result_info;
 
-            for($page = 1; $page <= $paginator->total_pages; $page++){
+            //Iterate through collection and search for expression;
+
+            $paginator = $response->collect()['result_info'];
+
+            for($page = 1; $page <= $paginator['total_pages']; $page++) {
 
                 $response = $this->listPaginator($cloudflare_endpoint, $page);
 
-                foreach($response->collect()->result as $filter){
+                foreach($response->collect()['result'] as $filter) {
 
-                    if($filter->expression == $expression){
-                        return $filter->id;
+                    if($filter['ref'] == $filter_ref) {
+                        return $filter;
                     }
 
                 }
 
             }
-            
+
         }
 
-        return null;
+        return $this->createFilter($expression, $filter_ref);
+
+    }
+
+    private function createRule(string $ref, string $filter_id)
+    {
+        match($ref){
+            'bot-licker.ban' => $action = 'block',
+            'bot-licker.challenge' => $action = 'challenge',
+            default => $action = 'block',
+        };
+
+        $response =
+
+        Http::withHeaders($this->getHeaders())->post("{$this->url}zones/{$this->getZone()}/firewall/rules", [
+            [
+            "filter" => [
+                "id"=> $filter_id
+            ],
+            "action" => $action,
+            "description" => "Bot Licker rule on " . Carbon::now()->format('Y-m-d h:i:s'),
+            "ref" => $ref
+            ]
+        ]);
+
+        if($response->failed()) 
+            throw new \Exception("Could not create rule for {$ref}");
+
+    }
+
+    private function createFilter(string $expression, string $ref): mixed
+    {
+        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters";
+
+        $response = 
+        Http::withHeaders($this->getHeaders())->post($cloudflare_endpoint, [
+            [
+            "expression"=> $expression,
+            "description" => "Bot Licker filter <BAN IP> created on " . Carbon::now()->format('Y-m-d h:i:s'),
+            "ref" => $ref
+            ],
+        ]);
+
+        if($response->successful()){
+            //create the rule and associate the filter ID
+            $this->createRule($ref, $response->collect()["result"][0]["id"]);
+        
+            return $response->collect();
+
+        }
+        else {
+            
+            throw new \Exception("Could not create filter for {$expression}");
+        }
     }
 
     private function listPaginator($url, $page = 1, $per_page = 50)
@@ -289,21 +336,31 @@ class CloudflareProvider implements ProviderContract
         ]);
     }
 
-    private function hydratePagination($response)
-    {
+    // private function getFilterById($filter_id): string
+    // {
 
-        $pagination = $response->collect()->result_info;
+    //     $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/filters/{$filter_id}";
 
-        $pagination = [
-            'total_pages' => $pagination->total_pages,
-            'count' => $pagination->count,
-            'per_page' => $pagination->per_page,
-            'page' => $pagination->page,
-            'total_count' => $pagination->total_count,
-        ];
+    //     $response = 
+        
+    //     Http::withHeaders($this->getHeaders())->get($cloudflare_endpoint);
 
-        return $pagination;
+    //     // {
+    //     //   "result": {
+    //     //     "id": "<FILTER_ID>",
+    //     //     "paused": false,
+    //     //     "description": "Login from office",
+    //     //     "expression": "ip.src eq 93.184.216.0 and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\")"
+    //     //   },
+    //     //   "success": true,
+    //     //   "errors": [],
+    //     //   "messages": []
+    //     // }
 
-    }
+    //     if($response->successful()){
+    //         return $response->collect()->result->id;
+    //     }
+
+    // }
 
 }

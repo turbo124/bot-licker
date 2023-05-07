@@ -2,6 +2,11 @@
     "name": "turbo124/bot-licker",
     "description": "Package for Laravel to block IPs at the network edge",
     "type": "library",
+    "keywords": [
+        "bots",
+        "firewall",
+        "cloudflare"
+    ],
     "require": {
         "illuminate/support": "^9|^10"
     },
@@ -19,5 +24,27 @@
             "name": "David Bomba",
             "email": "turbo124@gmail.com"
         }
-    ]
+    ],
+    "autoload-dev": {
+        "psr-4": {
+            "Turbo124\\BotLicker\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Turbo124\\BotLicker\\FirewallServiceProvider"
+            ],
+            "aliases": {
+                "Firewall": "Turbo124\\BotLicker\\FirewallFacade"
+            }
+        }
+    }
 }

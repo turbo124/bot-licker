@@ -74,3 +74,13 @@ Currently only Cloudflare is supported, however you can easily implement the Pro
 ```php
 Firewall::setProvider(OtherWAF::class)->ban('101.1.1.254');
 ```
+
+### TODO:
+Currently the package perform simply bans/unbans etc. In the next iteration, ban duration will be also be added in order for some rules to be removed after X timeperiod. ie
+
+```php
+Firewall::ban('101.1.1.254')->expires(Carbon::now()->addYear());
+```
+
+## License
+The MIT License (MIT)

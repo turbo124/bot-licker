@@ -1,7 +1,7 @@
 
 <p align="center">
- ![Bot Licker - Firewall for laravel](botlicker.png)
- </p>
+    <img src="botlicker.png">
+</p>
 
 # Bot Licker
 

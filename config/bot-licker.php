@@ -25,4 +25,10 @@ return [
      * Array of IPs to never ban
      */
     'whitelist' => [],
+
+    /**
+     * Analyze inbound requests and match against rules
+     */
+    'query_log' => false,
+
 ];

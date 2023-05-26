@@ -2,7 +2,10 @@
 
 namespace Turbo124\BotLicker;
 
+use QueryLog;
+use Turbo124\BotLicker\Facades\Rule;
 use Illuminate\Support\ServiceProvider;
+use Turbo124\BotLicker\Jobs\LogAnalysis;
 use Illuminate\Console\Scheduling\Schedule;
 use Turbo124\BotLicker\EventServiceProvider;
 use Turbo124\BotLicker\Commands\FirewallRules;
@@ -30,10 +33,14 @@ class BotLickerServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
                 $schedule = $this->app->make(Schedule::class);
-                // $schedule->job(new BatchMetrics())->everyFiveMinutes()->withoutOverlapping()->name('bot-licker-batch-job')->onOneServer();
+
+                if(config('bot-licker.query_log'))
+                    $schedule->job(new LogAnalysis())->everyFiveMinutes()->withoutOverlapping()->name('bot-licker-log-analysis-job')->onOneServer();
+
             });
         }
 
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
     }
 
@@ -48,8 +55,15 @@ class BotLickerServiceProvider extends ServiceProvider
         $this->app->bind('bot-licker', function () {
             return new BotLicker();
         });
+        
+        $this->app->bind('bot-licker-rule', function () {
+            return new Rule();
+        });
 
         $this->app->register(EventServiceProvider::class);
+
+        if(config('bot-licker.query_log'))
+            $this->app->singleton(QueryLog::class);
 
     }
 }

@@ -159,7 +159,7 @@ class BotLicker
      * @param  \Illuminate\Support\Carbon $start
      * @return self
      */
-    public function expires(\Illuminate\Support\Carbon $start): self
+    public function expires(\Illuminate\Support\Carbon $expiry): self
     {
         return $this;
     }

@@ -67,6 +67,28 @@ To then disable
 Firewall::unbanCountry('DE');
 ```
 
+### Protected IPs and Countries
+
+If you need rules to whitelist IP address range or Countries simply...
+
+```php
+Firewall::whitelistIp('101.1.1.254');
+```
+
+or
+
+```php
+Firewall::whitelistCountry('US');
+```
+
+### Automated rules
+
+Are you tired of seeing bots trying to hit .env or phpinfo.php in your logs? You can now zap these IPs instantly with
+
+```php
+Rule::uriContains('phpinfo.php')->ban();
+```
+
 ### Extending BotLicker with new providers
 
 Currently only Cloudflare is supported, however you can easily implement the ProviderContract and generate the corresponding methods for other WAFs. Once you have created your provider, simply inject it into the `setProvider()`

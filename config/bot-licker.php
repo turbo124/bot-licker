@@ -31,4 +31,8 @@ return [
      */
     'query_log' => false,
 
+    /**
+     * Preference a particular DB connection for this service
+     */
+    'db_connection' => 'default',
 ];

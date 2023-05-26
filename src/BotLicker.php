@@ -3,6 +3,7 @@
 namespace Turbo124\BotLicker;
 
 use Turbo124\BotLicker\Providers\ProviderContract;
+use Turbo124\BotLicker\Models\Botlicker as BotModel;
 
 class BotLicker
 {    
@@ -23,6 +24,10 @@ class BotLicker
      */
     protected string $iso_3166_2 = '';
 
+    
+    /** @var mixed $action */
+    protected string $action = '';
+    
     /**
      * Ban a IP address 
      *
@@ -33,6 +38,7 @@ class BotLicker
     public function ban(string $ip, array $params = []): self
     {
         $this->ip = $ip;
+        $this->action = 'ban';
 
         $this->getProvider()->banIp($ip, $params);    
 
@@ -68,6 +74,7 @@ class BotLicker
     {
         
         $this->ip = $ip;
+        $this->action = 'challenge';
 
         $this->getProvider()->challengeIp($ip, $params);
     
@@ -104,6 +111,8 @@ class BotLicker
     {
 
         $this->iso_3166_2 = $iso_3166_2;
+
+        $this->action = 'ban';
 
         $this->getProvider()->banCountry($iso_3166_2, $params);
     
@@ -156,11 +165,19 @@ class BotLicker
     /**
      * expires
      *
-     * @param  \Illuminate\Support\Carbon $start
+     * @param  \Illuminate\Support\Carbon $expiry
      * @return self
      */
-    public function expires(\Illuminate\Support\Carbon $expiry): self
+    public function expires(?\Illuminate\Support\Carbon $expiry = null): self
     {
+        
+        BotModel::insert([
+            'ip' => $this->ip,
+            'iso_3166_2' => $this->iso_3166_2,
+            'action' => $this->action,
+            'expiry' => null
+        ]);
+
         return $this;
     }
 

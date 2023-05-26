@@ -30,7 +30,7 @@ class BotLickerServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
                 $schedule = $this->app->make(Schedule::class);
-                // $schedule->job(new BatchMetrics())->everyFiveMinutes()->withoutOverlapping()->name('beacon-batch-job')->onOneServer();
+                // $schedule->job(new BatchMetrics())->everyFiveMinutes()->withoutOverlapping()->name('bot-licker-batch-job')->onOneServer();
             });
         }
 

@@ -8,17 +8,36 @@ class BotLicker
 {    
     /** @var ProviderContract $provider */
     protected ProviderContract $provider;
+    
+    /**
+     * IP Address
+     *
+     * @var string
+     */
+    protected string $ip = '';
+        
+    /** 
+     * ISO 3166 2 character country code
+     *  
+     * @var string $iso_3166_2 
+     */
+    protected string $iso_3166_2 = '';
 
     /**
      * Ban a IP address 
      *
      * @param  string $ip
      * @param  array $params
-     * @return bool
+     * @return self
      */
-    public function ban(string $ip, array $params = []): bool
+    public function ban(string $ip, array $params = []): self
     {
-        return $this->getProvider()->banIp($ip, $params);
+        $this->ip = $ip;
+
+        $this->getProvider()->banIp($ip, $params);    
+
+        return $this;
+
     }
 
     /**
@@ -26,11 +45,16 @@ class BotLicker
      *
      * @param  string $ip
      * @param  array $params
-     * @return bool
+     * @return self
      */
-    public function unban(string $ip, array $params = []): bool
+    public function unban(string $ip, array $params = []): self
     {
-        return $this->getProvider()->unbanIp($ip, $params);
+    
+        $this->ip = $ip;
+
+        $this->getProvider()->unbanIp($ip, $params);
+    
+        return $this;
     }
     
     /**
@@ -38,11 +62,17 @@ class BotLicker
      *
      * @param  string $ip
      * @param  array $params
-     * @return bool
+     * @return self
      */
-    public function challenge(string $ip, array $params = []): bool
+    public function challenge(string $ip, array $params = []): self
     {
-        return $this->getProvider()->challengeIp($ip, $params);
+        
+        $this->ip = $ip;
+
+        $this->getProvider()->challengeIp($ip, $params);
+    
+        return $this;
+
     }
     
     /**
@@ -50,11 +80,17 @@ class BotLicker
      *
      * @param  string $ip
      * @param  array $params
-     * @return bool
+     * @return self
      */
-    public function unchallenge(string $ip, array $params = []): bool
+    public function unchallenge(string $ip, array $params = []): self
     {
-        return $this->getProvider()->unchallengeIp($ip, $params);
+        
+        $this->ip = $ip;
+
+        $this->getProvider()->unchallengeIp($ip, $params);
+    
+        return $this;
+
     }
     
     /**
@@ -62,11 +98,17 @@ class BotLicker
      *
      * @param  string $iso_3166_2
      * @param  array $params
-     * @return bool
+     * @return self
      */
-    public function banCountry(string $iso_3166_2, array $params = []): bool
+    public function banCountry(string $iso_3166_2, array $params = []): self
     {
-        return $this->getProvider()->banCountry($iso_3166_2, $params);
+
+        $this->iso_3166_2 = $iso_3166_2;
+
+        $this->getProvider()->banCountry($iso_3166_2, $params);
+    
+        return $this;
+
     }
 
     /**
@@ -74,17 +116,25 @@ class BotLicker
      *
      * @param  string $iso_3166_2
      * @param  array $params
-     * @return bool
+     * @return self
      */
-    public function unbanCountry(string $iso_3166_2, array $params = []): bool
+    public function unbanCountry(string $iso_3166_2, array $params = []): self
     {
-        return $this->getProvider()->unbanCountry($iso_3166_2, $params);
+
+        $this->iso_3166_2 = $iso_3166_2;
+
+        $this->getProvider()->unbanCountry($iso_3166_2, $params);
+    
+        return $this;
+
     }
 
     public function getRules()
     {
         
-        return $this->getProvider()->getRules();
+        $this->getProvider()->getRules();
+
+        return $this;
 
     }
 
@@ -96,11 +146,24 @@ class BotLicker
      */
     public function setProvider($provider): self
     {
+
         $this->provider = $provider;
 
         return $this;
+
     }
-    
+        
+    /**
+     * expires
+     *
+     * @param  \Illuminate\Support\Carbon $start
+     * @return self
+     */
+    public function expires(\Illuminate\Support\Carbon $start): self
+    {
+        return $this;
+    }
+
     /**
      * Get Provider
      *
@@ -108,9 +171,11 @@ class BotLicker
      */
     private function getProvider(): ProviderContract
     {
+
         $default_provider = config('bot-licker.provider');
 
         return $this->provider ?? new $default_provider;
+
     }
 
 }

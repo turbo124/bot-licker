@@ -23,8 +23,6 @@ class FirewallRules extends Command
         $bot = new BotLicker();
         $rules = $bot->getRules();
 
-        echo print_r($rules, true);
-
         $collect_rules = collect($rules)->map(function ($r){
             
             return ['description' => $r['description'], 'expression' => $r['expression']];

@@ -31,13 +31,29 @@ class Rule
 
     public function ban(): void
     {
+
+        $this->persist('ban');
+
+    }
+
+
+    public function challenge(): void
+    {
+
+        $this->persist('challenge');
         
+    }
+
+
+    private function persist(string $action): void
+    {
+
         BotlickerRule::on(config('bot-licker.db_connection'))
-                     ->insert([
+                    ->insert([
                         'matches'   => $this->rule,
-                        'action'    => $this->action,
+                        'action'    => $action,
                         'expiry'    => $this->expiry,
-                     ]);
-                     
+                    ]);
+
     }
 }

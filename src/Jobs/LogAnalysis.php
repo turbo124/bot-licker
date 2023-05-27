@@ -39,7 +39,6 @@ class LogAnalysis implements ShouldQueue
         $rules = BotlickerRule::on(config('bot-licker.db_connection'))->get();
         
         BotlickerLog::on(config('bot-licker.db_connection'))
-                    ->query()
                     ->cursor()
                     ->each(function ($log) use ($rules){
 

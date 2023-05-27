@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Turbo124\BotLicker\Facades\Firewall;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Turbo124\BotLicker\Models\Botlicker as BotModel;
 use Turbo124\BotLicker\Models\BotlickerLog;
 use Turbo124\BotLicker\Models\BotlickerRule;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
@@ -41,24 +42,24 @@ class LogAnalysis implements ShouldQueue
                     ->cursor()
                     ->each(function ($log) use ($rules){
 
-                        $rules->each(function ($rule) use ($log){
-
-                            if(stripos($log->uri, $rule->matches) !== false)
+                        if(BotModel::where('ip', $log->ip)->doesntExist())
+                        {
+                            $rules->each(function ($rule) use ($log)
                             {
-                                match($rule->action)
+    
+                                if (stripos($log->uri, $rule->matches) !== false) 
                                 {
-                                    'ban' => Firewall::ban($log->ip)->expiry($log->expires),
-                                    'challenge' => Firewall::challenge($log->ip)->expiry($log->expires),
-                                    default => null,
-                                };
+                                    match ($rule->action) {
+                                        'ban' => Firewall::ban($log->ip)->expiry($log->expires),
+                                        'challenge' => Firewall::challenge($log->ip)->expiry($log->expires),
+                                        default => null,
+                                    };
 
-                                $log->delete();
-                                
-                                return;
-                            }
-                                
-
-                        });
+                                    $log->delete();
+                                    return;
+                                }
+                            });
+                        }
 
                         $log->delete();
 

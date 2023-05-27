@@ -10,6 +10,19 @@ class EventServiceProvider extends ServiceProvider
 
     ];
 
+
+
+    // /**
+    //  * {@inheritdoc}
+    //  */
+    // public function __construct(Application $app)
+    // {
+    //     parent::__construct($app);
+
+    //     $this->listen = [];
+    // }
+
+
     /**
      * Register any events for your application.
      *
@@ -18,5 +31,8 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
+        
+        $this->listen = (array)config('bot-licker.events');
+
     }
 }

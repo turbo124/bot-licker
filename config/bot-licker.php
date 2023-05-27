@@ -17,14 +17,18 @@ return [
      */
     'cloudflare' => [
         'api_key' => env('CLOUDFLARE_API_KEY'),
-        'email' => env('CLOUDFLARE_EMAIL'),
+        'email'   => env('CLOUDFLARE_EMAIL'),
         'zone_id' => env('CLOUDFLARE_ZONE_ID'),
     ],
 
     /**
      * Array of IPs to never ban
+     * 
+     * @var array<string>
      */
-    'whitelist_ips' => [],
+    'whitelist_ips' => [
+        '127.0.0.1',
+    ],
 
     /**
      * Array of Countries to never ban - ISO 3166 2 character country code
@@ -41,5 +45,7 @@ return [
      */
     'db_connection' => 'default',
 
-    
+    'events' => [
+
+    ],
 ];

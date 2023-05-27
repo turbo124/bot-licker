@@ -46,7 +46,7 @@ class BotLickerServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        if(config('bot-licker.query_log'))
+        if(config('bot-licker.enabled') && config('bot-licker.query_log'))
             $kernel->pushMiddleware(QueryLog::class);
 
     }
@@ -69,7 +69,7 @@ class BotLickerServiceProvider extends ServiceProvider
 
         $this->app->register(EventServiceProvider::class);
 
-        if(config('bot-licker.query_log'))
+        if(config('bot-licker.enabled') && config('bot-licker.query_log'))
             $this->app->singleton(QueryLog::class);
 
     }

@@ -17,14 +17,14 @@ class BotLicker
      *
      * @var string
      */
-    protected ?string $ip;
+    protected ?string $ip = null;
         
     /** 
      * ISO 3166 2 character country code
      *  
      * @var string $iso_3166_2 
      */
-    protected ?string $iso_3166_2;
+    protected ?string $iso_3166_2 = null;
 
     
     /** 

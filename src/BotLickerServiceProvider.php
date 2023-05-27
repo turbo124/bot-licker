@@ -17,7 +17,7 @@ class BotLickerServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot()
+    public function boot(\Illuminate\Contracts\Http\Kernel $kernel)
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -47,7 +47,7 @@ class BotLickerServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         if(config('bot-licker.query_log'))
-            $this->app['router']->middleware('query_log', QueryLog::class);
+            $kernel->pushMiddleware(QueryLog::class);
 
     }
 

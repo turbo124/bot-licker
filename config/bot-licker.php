@@ -5,7 +5,7 @@ return [
     /**
      * Enable or disable the firewall
      */
-    'enabled' => env('FIREWALL_ENABLED', true),
+    'enabled' => env('FIREWALL_ENABLED', false),
     
     /**
      * The firewall provider to use

@@ -41,7 +41,7 @@ class BotLicker
      * @param  ?Carbon $expiry
      * @return self
      */
-    public function ban(string $ip, ?Carbon $expiry): self
+    public function ban(string $ip, ?\Illuminate\Support\Carbon $expiry = null): self
     {
         $this->ip = $ip;
 
@@ -96,7 +96,7 @@ class BotLicker
      * @param  ?Carbon $expiry
      * @return self
      */
-    public function challenge(string $ip, ?Carbon $expiry): self
+    public function challenge(string $ip, ?\Illuminate\Support\Carbon $expiry = null): self
     {
         
         $this->ip = $ip;
@@ -150,7 +150,7 @@ class BotLicker
      * 
      * @return self
      */
-    public function banCountry(string $iso_3166_2, ?Carbon $expiry): self
+    public function banCountry(string $iso_3166_2, ?\Illuminate\Support\Carbon $expiry = null): self
     {
 
         $this->iso_3166_2 = $iso_3166_2;

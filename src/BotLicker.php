@@ -2,8 +2,10 @@
 
 namespace Turbo124\BotLicker;
 
+use Illuminate\Support\Carbon;
+use Turbo124\BotLicker\Models\BotlickerBan;
 use Turbo124\BotLicker\Providers\ProviderContract;
-use Turbo124\BotLicker\Models\Botlicker as BotModel;
+use Turbo124\BotLicker\Exceptions\DisabledException;
 
 class BotLicker
 {    
@@ -39,14 +41,17 @@ class BotLicker
      * @param  array $params
      * @return self
      */
-    public function ban(string $ip, array $params = []): self
+    public function ban(string $ip, ?Carbon $expiry): self
     {
         $this->ip = $ip;
+
         $this->action = 'ban';
 
         try{
 
-            $this->preFlight()->getProvider()->banIp($ip, $params);    
+            $this->preFlight()->getProvider()->banIp($ip);    
+
+            $this->expires($expiry);
 
             return $this;
 
@@ -65,15 +70,17 @@ class BotLicker
      * @param  array $params
      * @return self
      */
-    public function unban(string $ip, array $params = []): self
+    public function unban(string $ip, ?Carbon $expiry): self
     {
     
         $this->ip = $ip;
 
         try {
 
-            $this->preFlight()->getProvider()->unbanIp($ip, $params);
+            $this->preFlight()->getProvider()->unbanIp($ip);
     
+            $this->expires($expiry);
+
             return $this;
 
         }
@@ -90,7 +97,7 @@ class BotLicker
      * @param  array $params
      * @return self
      */
-    public function challenge(string $ip, array $params = []): self
+    public function challenge(string $ip, ?Carbon $expiry): self
     {
         
         $this->ip = $ip;
@@ -98,8 +105,10 @@ class BotLicker
 
         try {
         
-            $this->preFlight()->getProvider()->challengeIp($ip, $params);
+            $this->preFlight()->getProvider()->challengeIp($ip);
             
+            $this->expires($expiry);
+
             return $this;
 
         }
@@ -116,15 +125,17 @@ class BotLicker
      * @param  array $params
      * @return self
      */
-    public function unchallenge(string $ip, array $params = []): self
+    public function unchallenge(string $ip, ?Carbon $expiry): self
     {
         
         $this->ip = $ip;
 
         try {
         
-            $this->preFlight()->getProvider()->unchallengeIp($ip, $params);
+            $this->preFlight()->getProvider()->unchallengeIp($ip);
         
+            $this->expires($expiry);
+
             return $this;
 
         }
@@ -143,7 +154,7 @@ class BotLicker
      * 
      * @return self
      */
-    public function banCountry(string $iso_3166_2, array $params = []): self
+    public function banCountry(string $iso_3166_2, ?Carbon $expiry): self
     {
 
         $this->iso_3166_2 = $iso_3166_2;
@@ -152,8 +163,10 @@ class BotLicker
 
         try {
             
-            $this->preFlight()->getProvider()->banCountry($iso_3166_2, $params);
+            $this->preFlight()->getProvider()->banCountry($iso_3166_2);
     
+            $this->expires($expiry);
+
             return $this;
 
         }
@@ -171,15 +184,17 @@ class BotLicker
      * 
      * @return self
      */
-    public function unbanCountry(string $iso_3166_2, array $params = []): self
+    public function unbanCountry(string $iso_3166_2, ?Carbon $expiry): self
     {
 
         $this->iso_3166_2 = $iso_3166_2;
 
         try {
 
-            $this->preFlight()->getProvider()->unbanCountry($iso_3166_2, $params);
+            $this->preFlight()->getProvider()->unbanCountry($iso_3166_2);
     
+            $this->expires($expiry);
+
             return $this;
 
         }
@@ -233,7 +248,7 @@ class BotLicker
     public function expires(?\Illuminate\Support\Carbon $expiry = null): self
     {
         
-        BotModel::insert([
+        BotlickerBan::insert([
             'ip' => $this->ip,
             'iso_3166_2' => $this->iso_3166_2,
             'action' => $this->action,
@@ -256,11 +271,16 @@ class BotLicker
         return $this->provider ?? new $default_provider;
 
     }
-
+    
+    /**
+     * Pre Flight Checks
+     *
+     * @return self
+     */
     private function preFlight(): self
     {
         if(config('bot-licker.enabled'))
-            throw new \DisabledException('Disabled package', 444);
+            throw new DisabledException('Disabled package', 444);
 
         if($this->ip && in_array($this->ip, config('bot-licker.whitelist_ips')))
             throw new \Exception('Protected IP address, cannot be actioned', 400);

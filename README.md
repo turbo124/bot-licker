@@ -34,7 +34,7 @@ CLOUDFLARE_ZONE_ID="your_zone_id"
 To permanently ban an IP address from reaching your server.
 
 ```php
-Firewall::ban('101.1.1.254');
+Firewall::ban('101.1.1.254', Carbon::now()->addYear());
 ```
 
 To unban and IP address
@@ -46,7 +46,7 @@ Firewall::unban('101.1.1.254');
 If you would prefer to issue a challenge to an IP address
 
 ```php
-Firewall::challenge('101.1.1.254');
+Firewall::challenge('101.1.1.254', Carbon::now()->addYear());
 ```
 
 To then disable
@@ -58,7 +58,7 @@ Firewall::unchallenge('101.1.1.254');
 If you would prefer to ban an entire country simply pass in the iso_3166_2 country code
 
 ```php
-Firewall::banCountry('DE');
+Firewall::banCountry('DE', Carbon::now()->addYear());
 ```
 
 To then disable
@@ -94,14 +94,14 @@ Rule::uriMatches('phpinfo.php')->ban();
 Currently only Cloudflare is supported, however you can easily implement the ProviderContract and generate the corresponding methods for other WAFs. Once you have created your provider, simply inject it into the `setProvider()`
 
 ```php
-Firewall::setProvider(OtherWAF::class)->ban('101.1.1.254');
+Firewall::setProvider(OtherWAF::class)->ban('101.1.1.254', now()->addMinutes(5));
 ```
 
 ### TODO:
 Currently the package perform simply bans/unbans etc. In the next iteration, ban duration will be also be added in order for some rules to be removed after X timeperiod. ie
 
 ```php
-Firewall::ban('101.1.1.254')->expires(Carbon::now()->addYear());
+Firewall::ban('101.1.1.254', Carbon::now()->addYear());
 ```
 
 ## License

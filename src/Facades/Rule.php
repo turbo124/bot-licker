@@ -4,7 +4,7 @@ namespace Turbo124\BotLicker\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Firewall extends Facade
+class Rule extends Facade
 {
     /**
      * Get the registered name of the component.

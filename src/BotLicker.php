@@ -57,7 +57,7 @@ class BotLicker
 
         }
         catch(\Exception $e) {
-
+            return $e;
         }
 
 

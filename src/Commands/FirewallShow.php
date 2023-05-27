@@ -3,7 +3,7 @@
 namespace Turbo124\BotLicker\Commands;
 
 use Illuminate\Console\Command;
-use Turbo124\BotLicker\Models\Botlicker as BotModel;
+use Turbo124\BotLicker\Models\BotlickerBan;
 
 class FirewallShow extends Command
 {
@@ -21,7 +21,7 @@ class FirewallShow extends Command
     {
         $this->table(
             ['id', 'ip', 'country', 'expiry'],
-            BotModel::all(['id', 'ip', 'iso_3166_2', 'expiry'])->toArray()
+            BotlickerBan::all(['id', 'ip', 'iso_3166_2', 'expiry'])->toArray()
         );
     }
 }

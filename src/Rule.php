@@ -15,16 +15,16 @@ class Rule
 
     private string $action = 'ban';
 
-    private ?Carbon $expiry;
+    private ?int $duration;
 
-    public function matches(string $rule, ?Carbon $expiry = null)
+    public function matches(string $rule, ?int $expires = null)
     {
 
         if(strlen($rule) < 3)
             return $this;
 
         $this->rule = $rule;
-        $this->expiry = $expiry;
+        $this->duration = $expires ? now()->addSeconds($expires): null;
 
         return $this;
     }
@@ -52,7 +52,7 @@ class Rule
                     ->insert([
                         'matches'   => $this->rule,
                         'action'    => $action,
-                        'expiry'    => $this->expiry,
+                        'expiry'    => $this->duration,
                     ]);
 
     }

@@ -18,7 +18,7 @@ class QueryLog
         // Store the session data...
         BotlickerLog::on(config('bot-licker.db_connection'))->insert([
             'ip' => $request->ip(),
-            'uri' => substr(urldecode($request->getRequestUri()), 0, 180),
+            'url' => substr(urldecode($request->getRequestUri()), 0, 180),
         ]);
 
     }

@@ -8,8 +8,10 @@ use Turbo124\BotLicker\Rule;
 use Illuminate\Support\ServiceProvider;
 use Turbo124\BotLicker\Jobs\LogAnalysis;
 use Illuminate\Console\Scheduling\Schedule;
+use Turbo124\BotLicker\Commands\FirewallDbRules;
 use Turbo124\BotLicker\EventServiceProvider;
 use Turbo124\BotLicker\Commands\FirewallRules;
+use Turbo124\BotLicker\Commands\FirewallShow;
 
 class BotLickerServiceProvider extends ServiceProvider
 {
@@ -26,7 +28,9 @@ class BotLickerServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                FirewallRules::class
+                // FirewallRules::class,
+                FirewallShow::class,
+                FirewallDbRules::class
             ]);
         }
 

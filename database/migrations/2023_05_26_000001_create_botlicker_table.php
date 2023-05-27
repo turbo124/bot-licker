@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
 
-    public $connection = "database.".config('bot-licker.db_connection');
+    
     /**
      * Run the migrations.
      *
@@ -15,7 +15,7 @@ return new class () extends Migration {
     public function up()
     {
 
-        Schema::create('botlick_bans', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::on("database.".config('bot-licker.db_connection'))->create('botlick_bans', function (Illuminate\Database\Schema\Blueprint $table) {
 
             $table->id();
             $table->string('ip')->nullable()->index();
@@ -28,7 +28,7 @@ return new class () extends Migration {
 
         });
 
-        Schema::create('botlicker_rules', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::on("database.".config('bot-licker.db_connection'))->create('botlicker_rules', function (Illuminate\Database\Schema\Blueprint $table) {
 
             $table->id();
             $table->string('matches')->nullable();
@@ -37,7 +37,7 @@ return new class () extends Migration {
 
         });
 
-        Schema::create('botlicker_logs', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::on("database.".config('bot-licker.db_connection'))->create('botlicker_logs', function (Illuminate\Database\Schema\Blueprint $table) {
 
             $table->id();
             $table->string('ip')->nullable();

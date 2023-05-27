@@ -248,7 +248,8 @@ class BotLicker
     public function expires(?\Illuminate\Support\Carbon $expiry = null): self
     {
         
-        BotlickerBan::insert([
+        BotlickerBan::on("database.".config('bot-licker.db_connection'))
+        ->insert([
             'ip' => $this->ip,
             'iso_3166_2' => $this->iso_3166_2,
             'action' => $this->action,

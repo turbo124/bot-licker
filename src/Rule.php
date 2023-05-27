@@ -17,11 +17,11 @@ class Rule
 
     private ?Carbon $expiry;
 
-    public function matches(string $rule, ?Carbon $expiry)
+    public function matches(string $rule, ?Carbon $expiry = null)
     {
 
-        if(strlen($rule < 3))
-            return;
+        if(strlen($rule) < 3)
+            return $this;
 
         $this->rule = $rule;
         $this->expiry = $expiry;

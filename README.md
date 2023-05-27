@@ -83,10 +83,10 @@ Firewall::whitelistCountry('US');
 
 ### Automated rules
 
-Are you tired of seeing bots trying to hit .env or phpinfo.php in your logs? You can now zap these IPs instantly with
+Are you tired of seeing bots trying to hit .env or phpinfo.php in your logs? You can now zap these IPs instantly with, you can pass an option Carbon instance if you wish to have an expiry on the rule, otherwise it runs indefinitely.
 
 ```php
-Rule::matches('phpinfo.php')->ban();
+Rule::matches('phpinfo.php', now()->addYear())->ban();
 ```
 
 ### Extending BotLicker with new providers

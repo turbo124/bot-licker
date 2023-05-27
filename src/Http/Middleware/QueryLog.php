@@ -1,5 +1,8 @@
 <?php
 
+
+namespace Turbo124\BotLicker\Http\Middleware;
+
 use Closure;
 use Turbo124\BotLicker\Models\BotlickerLog;
 use Illuminate\Contracts\Routing\TerminableMiddleware;

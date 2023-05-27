@@ -2,7 +2,6 @@
 
 namespace Turbo124\BotLicker;
 
-use QueryLog;
 use Turbo124\BotLicker\BotLicker;
 use Turbo124\BotLicker\Rule;
 use Illuminate\Support\ServiceProvider;
@@ -10,7 +9,6 @@ use Turbo124\BotLicker\Jobs\LogAnalysis;
 use Illuminate\Console\Scheduling\Schedule;
 use Turbo124\BotLicker\Commands\FirewallDbRules;
 use Turbo124\BotLicker\EventServiceProvider;
-use Turbo124\BotLicker\Commands\FirewallRules;
 use Turbo124\BotLicker\Commands\FirewallShow;
 
 class BotLickerServiceProvider extends ServiceProvider
@@ -47,14 +45,8 @@ class BotLickerServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        if(config('bot-licker.query_log')){
-            $router = $this->app['router'];
-
-            $router->pushMiddlewareToGroup('api', QueryLog::class);
-            $router->pushMiddlewareToGroup('web', QueryLog::class);
-            $router->pushMiddlewareToGroup('client', QueryLog::class);
-
-        }
+        if(config('bot-licker.query_log'))
+            $this->app->middleware([QueryLog::class]);
 
     }
 

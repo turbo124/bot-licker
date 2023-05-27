@@ -66,7 +66,6 @@ class LogAnalysis implements ShouldQueue
                     });
 
         BotlickerBan::on(config('bot-licker.db_connection'))
-                    ->query()
                     ->where('expiry', '<', now())
                     ->cursor()
                     ->each(function ($ban){

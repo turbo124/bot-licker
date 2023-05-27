@@ -15,7 +15,7 @@ return new class () extends Migration {
     public function up()
     {
 
-        Schema::connection("database.".config('bot-licker.db_connection'))->create('botlick_bans', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::connection(config('bot-licker.db_connection'))->create('botlick_bans', function (Illuminate\Database\Schema\Blueprint $table) {
 
             $table->id();
             $table->string('ip')->nullable()->index();
@@ -28,7 +28,7 @@ return new class () extends Migration {
 
         });
 
-        Schema::connection("database.".config('bot-licker.db_connection'))->create('botlicker_rules', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::connection(config('bot-licker.db_connection'))->create('botlicker_rules', function (Illuminate\Database\Schema\Blueprint $table) {
 
             $table->id();
             $table->string('matches')->nullable();
@@ -37,7 +37,7 @@ return new class () extends Migration {
 
         });
 
-        Schema::connection("database.".config('bot-licker.db_connection'))->create('botlicker_logs', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::connection(config('bot-licker.db_connection'))->create('botlicker_logs', function (Illuminate\Database\Schema\Blueprint $table) {
 
             $table->id();
             $table->string('ip')->nullable();

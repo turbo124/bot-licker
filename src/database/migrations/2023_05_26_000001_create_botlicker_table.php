@@ -15,7 +15,7 @@ return new class () extends Migration {
     public function up()
     {
 
-        Schema::create('botlickers', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::create('botlick_bans', function (Illuminate\Database\Schema\Blueprint $table) {
 
             $table->id();
             $table->string('ip')->nullable()->index();

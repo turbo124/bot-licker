@@ -325,7 +325,7 @@ class CloudflareProvider implements ProviderContract
 
         }
 
-        return $this->createFilter($expression, $filter_ref);
+        return $this->createFilter($expression, $filter_ref)->toArray();
 
     }
 

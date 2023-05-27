@@ -5,9 +5,8 @@ namespace Turbo124\BotLicker\Http\Middleware;
 
 use Closure;
 use Turbo124\BotLicker\Models\BotlickerLog;
-use Illuminate\Contracts\Routing\TerminableMiddleware;
 
-class QueryLog implements TerminableMiddleware
+class QueryLog
 {
     public function handle($request, Closure $next)
     {

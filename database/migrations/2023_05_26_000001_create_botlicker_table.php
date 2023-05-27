@@ -33,7 +33,7 @@ return new class () extends Migration {
             $table->id();
             $table->string('matches')->nullable();
             $table->string('action')->nullable();
-            $table->timestamp('expiry')->nullable();
+            $table->unsignedBigInteger('expiry')->nullable();
 
         });
 

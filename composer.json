@@ -43,7 +43,11 @@
         "laravel": {
             "providers": [
                 "Turbo124\\BotLicker\\BotLickerServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Firewall": "Turbo124\\BotLicker\\Facades\\BotLicker",
+                "Rule": "Turbo124\\BotLicker\\Facades\\Rule"
+            }
         }
     }
 }

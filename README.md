@@ -86,7 +86,7 @@ Firewall::whitelistCountry('US');
 Are you tired of seeing bots trying to hit .env or phpinfo.php in your logs? You can now zap these IPs instantly with
 
 ```php
-Rule::uriMatches('phpinfo.php')->ban();
+Rule::matches('phpinfo.php')->ban();
 ```
 
 ### Extending BotLicker with new providers

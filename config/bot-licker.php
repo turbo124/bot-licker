@@ -43,7 +43,7 @@ return [
     /**
      * Preference a particular DB connection for this service
      */
-    'db_connection' => 'default',
+    'db_connection' => env('DB_CONNECTION', 'mysql'),
 
     'events' => [
 

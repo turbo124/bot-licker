@@ -21,7 +21,7 @@ return new class () extends Migration {
             $table->string('ip')->nullable()->index();
             $table->string('iso_3166_2')->nullable();
 
-            $table->unsignedInteger('rule_id')->nullable();
+            $table->string('action')->nullable();
 
             $table->datetime('expiry')->nullable();
             $table->timestamps();

@@ -72,8 +72,17 @@ class LogAnalysis implements ShouldQueue
                     ->cursor()
                     ->each(function ($ban){
 
-                        if($ban->ip){
+                        if($ban->ip && $ban->action == 'ban'){
                             Firewall::unban($ban->ip);
+                        }                        
+                        if($ban->ip && $ban->action == 'challenge') {
+                            Firewall::unchallenge($ban->ip);
+                        }
+                        elseif($ban->iso_3166_2 && $ban->action == 'ban'){
+                            Firewall::unbanCountry($ban->iso_3166_2);
+                        }
+                        elseif($ban->iso_3166_2 && $ban->action == 'challenge'){
+                            Firewall::unbanCountry($ban->iso_3166_2);
                         }
 
                     });

@@ -83,6 +83,8 @@ class LogAnalysis implements ShouldQueue
                             Firewall::unbanCountry($ban->iso_3166_2);
                         }
 
+                        $ban->delete();
+                        
                     });
     }
 

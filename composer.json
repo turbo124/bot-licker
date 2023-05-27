@@ -45,7 +45,7 @@
                 "Turbo124\\BotLicker\\BotLickerServiceProvider"
             ],
             "aliases": {
-                "Firewall": "Turbo124\\BotLicker\\Facades\\BotLicker",
+                "Firewall": "Turbo124\\BotLicker\\Facades\\Firewall",
                 "Rule": "Turbo124\\BotLicker\\Facades\\Rule"
             }
         }

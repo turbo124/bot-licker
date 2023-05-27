@@ -36,6 +36,7 @@ class BotLickerServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
+                
                 $schedule = $this->app->make(Schedule::class);
 
                 if(config('bot-licker.query_log'))

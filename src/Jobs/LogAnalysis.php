@@ -50,8 +50,8 @@ class LogAnalysis implements ShouldQueue
                                 if (stripos($log->url, $rule->matches) !== false) 
                                 {
                                     match ($rule->action) {
-                                        'ban' => Firewall::ban($log->ip)->expiry($log->expires),
-                                        'challenge' => Firewall::challenge($log->ip)->expiry($log->expires),
+                                        'ban' => Firewall::ban($log->ip, $log->expires),
+                                        'challenge' => Firewall::challenge($log->ip, $log->expires),
                                         default => null,
                                     };
 

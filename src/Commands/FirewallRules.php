@@ -10,7 +10,7 @@ class FirewallRules extends Command
     /**
      * @var string
      */
-    protected $name = 'firewall:rules';
+    protected $name = 'firewall:waf-rules';
 
     /**
      * @var string

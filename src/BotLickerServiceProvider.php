@@ -3,7 +3,7 @@
 namespace Turbo124\BotLicker;
 
 use QueryLog;
-use Turbo124\BotLicker\Facades\Rule;
+use Turbo124\BotLicker\Rule;
 use Illuminate\Support\ServiceProvider;
 use Turbo124\BotLicker\Jobs\LogAnalysis;
 use Illuminate\Console\Scheduling\Schedule;

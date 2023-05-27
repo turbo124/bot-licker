@@ -24,7 +24,12 @@ return [
     /**
      * Array of IPs to never ban
      */
-    'whitelist' => [],
+    'whitelist_ips' => [],
+
+    /**
+     * Array of Countries to never ban - ISO 3166 2 character country code
+     */
+    'whitelist_countries' => [],
 
     /**
      * Analyze inbound requests and match against rules
@@ -35,4 +40,6 @@ return [
      * Preference a particular DB connection for this service
      */
     'db_connection' => 'default',
+
+    
 ];

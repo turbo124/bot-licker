@@ -15,17 +15,21 @@ class BotLicker
      *
      * @var string
      */
-    protected string $ip = '';
+    protected ?string $ip;
         
     /** 
      * ISO 3166 2 character country code
      *  
      * @var string $iso_3166_2 
      */
-    protected string $iso_3166_2 = '';
+    protected ?string $iso_3166_2;
 
     
-    /** @var mixed $action */
+    /** 
+     * The action to perform on this IP / Country
+     * 
+     * @var mixed $action 
+     * */
     protected string $action = '';
     
     /**
@@ -40,9 +44,17 @@ class BotLicker
         $this->ip = $ip;
         $this->action = 'ban';
 
-        $this->getProvider()->banIp($ip, $params);    
+        try{
 
-        return $this;
+            $this->preFlight()->getProvider()->banIp($ip, $params);    
+
+            return $this;
+
+        }
+        catch(\Exception $e) {
+
+        }
+
 
     }
 
@@ -58,9 +70,17 @@ class BotLicker
     
         $this->ip = $ip;
 
-        $this->getProvider()->unbanIp($ip, $params);
+        try {
+
+            $this->preFlight()->getProvider()->unbanIp($ip, $params);
     
-        return $this;
+            return $this;
+
+        }
+        catch(\Exception $e) {
+
+        }
+
     }
     
     /**
@@ -76,9 +96,16 @@ class BotLicker
         $this->ip = $ip;
         $this->action = 'challenge';
 
-        $this->getProvider()->challengeIp($ip, $params);
-    
-        return $this;
+        try {
+        
+            $this->preFlight()->getProvider()->challengeIp($ip, $params);
+            
+            return $this;
+
+        }
+        catch(\Exception $e) {
+
+        }
 
     }
     
@@ -94,9 +121,17 @@ class BotLicker
         
         $this->ip = $ip;
 
-        $this->getProvider()->unchallengeIp($ip, $params);
-    
-        return $this;
+        try {
+        
+            $this->preFlight()->getProvider()->unchallengeIp($ip, $params);
+        
+            return $this;
+
+        }
+        catch(\Exception $e) {
+
+        }
+
 
     }
     
@@ -105,6 +140,7 @@ class BotLicker
      *
      * @param  string $iso_3166_2
      * @param  array $params
+     * 
      * @return self
      */
     public function banCountry(string $iso_3166_2, array $params = []): self
@@ -114,9 +150,16 @@ class BotLicker
 
         $this->action = 'ban';
 
-        $this->getProvider()->banCountry($iso_3166_2, $params);
+        try {
+            
+            $this->preFlight()->getProvider()->banCountry($iso_3166_2, $params);
     
-        return $this;
+            return $this;
+
+        }
+        catch(\Exception $e) {
+
+        }
 
     }
 
@@ -125,6 +168,7 @@ class BotLicker
      *
      * @param  string $iso_3166_2
      * @param  array $params
+     * 
      * @return self
      */
     public function unbanCountry(string $iso_3166_2, array $params = []): self
@@ -132,18 +176,36 @@ class BotLicker
 
         $this->iso_3166_2 = $iso_3166_2;
 
-        $this->getProvider()->unbanCountry($iso_3166_2, $params);
+        try {
+
+            $this->preFlight()->getProvider()->unbanCountry($iso_3166_2, $params);
     
-        return $this;
+            return $this;
+
+        }
+        catch(\Exception $e) {
+
+        }
 
     }
-
-    public function getRules()
+    
+    /**
+     * Get the existing rules that are in the WAF
+     *
+     * @return void
+     */
+    public function getRules(): mixed
     {
-        
-        $this->getProvider()->getRules();
+        try {
 
-        return $this;
+            $this->getProvider()->getRules();
+
+            return $this;
+
+        }
+        catch(\Exception $e) {
+
+        }
 
     }
 
@@ -175,7 +237,7 @@ class BotLicker
             'ip' => $this->ip,
             'iso_3166_2' => $this->iso_3166_2,
             'action' => $this->action,
-            'expiry' => null
+            'expiry' => $expiry
         ]);
 
         return $this;
@@ -193,6 +255,21 @@ class BotLicker
 
         return $this->provider ?? new $default_provider;
 
+    }
+
+    private function preFlight(): self
+    {
+        if(config('bot-licker.enabled'))
+            throw new \DisabledException('Disabled package', 444);
+
+        if($this->ip && in_array($this->ip, config('bot-licker.whitelist_ips')))
+            throw new \Exception('Protected IP address, cannot be actioned', 400);
+
+            
+        if ($this->ip && in_array($this->ip, config('bot-licker.whitelist_countries'))) 
+            throw new \Exception('Protected Country Code, cannot be actioned', 400);
+
+        return $this;
     }
 
 }

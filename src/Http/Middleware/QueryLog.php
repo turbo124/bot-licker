@@ -14,7 +14,7 @@ class QueryLog implements TerminableMiddleware
     public function terminate($request, $response)
     {
         // Store the session data...
-        BotlickerLog::insert([
+        BotlickerLog::on("database.".config('bot-licker.db_connection'))->insert([
             'ip' => $request->ip(),
             'uri' => substr(urldecode($request->getRequestUri()), 0, 180),
         ]);

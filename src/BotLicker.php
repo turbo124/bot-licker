@@ -41,7 +41,7 @@ class BotLicker
      * @param  ?Carbon $expiry
      * @return self
      */
-    public function ban(string $ip, ?\Illuminate\Support\Carbon $expiry = null): self
+    public function ban(string $ip, ?\Illuminate\Support\Carbon $expiry = null)
     {
         $this->ip = $ip;
 
@@ -78,8 +78,6 @@ class BotLicker
 
             $this->preFlight()->getProvider()->unbanIp($ip);
     
-            $this->expires($expiry);
-
             return $this;
 
         }
@@ -273,7 +271,7 @@ class BotLicker
      */
     private function preFlight(): self
     {
-        if(config('bot-licker.enabled'))
+        if(!config('bot-licker.enabled'))
             throw new DisabledException('Disabled package', 444);
 
         if($this->ip && in_array($this->ip, config('bot-licker.whitelist_ips')))

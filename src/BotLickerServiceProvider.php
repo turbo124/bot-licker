@@ -47,6 +47,15 @@ class BotLickerServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
+        if(config('bot-licker.query_log')){
+            $router = $this->app['router'];
+
+            $router->pushMiddlewareToGroup('api', QueryLog::class);
+            $router->pushMiddlewareToGroup('web', QueryLog::class);
+            $router->pushMiddlewareToGroup('client', QueryLog::class);
+
+        }
+
     }
 
     /**

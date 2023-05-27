@@ -15,7 +15,7 @@ return new class () extends Migration {
     public function up()
     {
 
-        Schema::connection(config('bot-licker.db_connection'))->create('botlick_bans', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::connection(config('bot-licker.db_connection'))->create('botlicker_bans', function (Illuminate\Database\Schema\Blueprint $table) {
 
             $table->id();
             $table->string('ip')->nullable()->index();

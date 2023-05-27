@@ -65,6 +65,18 @@ class LogAnalysis implements ShouldQueue
                         $log->delete();
 
                     });
+
+        BotlickerBan::on(config('bot-licker.db_connection'))
+                    ->query()
+                    ->where('expiry', '<', now())
+                    ->cursor()
+                    ->each(function ($ban){
+
+                        if($ban->ip){
+                            Firewall::unban($ban->ip);
+                        }
+
+                    });
     }
 
     public function middleware()

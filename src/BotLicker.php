@@ -38,7 +38,7 @@ class BotLicker
      * Ban a IP address 
      *
      * @param  string $ip
-     * @param  array $params
+     * @param  ?Carbon $expiry
      * @return self
      */
     public function ban(string $ip, ?Carbon $expiry): self
@@ -67,10 +67,9 @@ class BotLicker
      * Unban a IP address 
      *
      * @param  string $ip
-     * @param  array $params
      * @return self
      */
-    public function unban(string $ip, ?Carbon $expiry): self
+    public function unban(string $ip): self
     {
     
         $this->ip = $ip;
@@ -94,7 +93,7 @@ class BotLicker
      * Challenge a IP address 
      *
      * @param  string $ip
-     * @param  array $params
+     * @param  ?Carbon $expiry
      * @return self
      */
     public function challenge(string $ip, ?Carbon $expiry): self
@@ -122,10 +121,9 @@ class BotLicker
      * UnChallenge a IP address 
      *
      * @param  string $ip
-     * @param  array $params
      * @return self
      */
-    public function unchallenge(string $ip, ?Carbon $expiry): self
+    public function unchallenge(string $ip): self
     {
         
         $this->ip = $ip;
@@ -134,8 +132,6 @@ class BotLicker
         
             $this->preFlight()->getProvider()->unchallengeIp($ip);
         
-            $this->expires($expiry);
-
             return $this;
 
         }
@@ -150,7 +146,7 @@ class BotLicker
      * Ban Country 
      *
      * @param  string $iso_3166_2
-     * @param  array $params
+     * @param  ?Carbon $expiry
      * 
      * @return self
      */
@@ -180,11 +176,10 @@ class BotLicker
      * UnBan Country 
      *
      * @param  string $iso_3166_2
-     * @param  array $params
      * 
      * @return self
      */
-    public function unbanCountry(string $iso_3166_2, ?Carbon $expiry): self
+    public function unbanCountry(string $iso_3166_2): self
     {
 
         $this->iso_3166_2 = $iso_3166_2;
@@ -193,8 +188,6 @@ class BotLicker
 
             $this->preFlight()->getProvider()->unbanCountry($iso_3166_2);
     
-            $this->expires($expiry);
-
             return $this;
 
         }

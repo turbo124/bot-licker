@@ -11,7 +11,7 @@ class FirewallDbRules extends Command
     /**
      * @var string
      */
-    protected $name = 'firewall:waf';
+    protected $name = 'firewall:waf {--delete=}';
 
     /**
      * @var string
@@ -21,6 +21,10 @@ class FirewallDbRules extends Command
     public function handle()
     {
         
+        if($this->option('delete')){
+            BotlickerRule::destroy($this->option('delete'));
+        }
+
         $this->table(
             ['id', 'Matches', 'Action', 'Expiry'],
             BotlickerRule::all(['id', 'matches', 'action', 'expiry'])->toArray()

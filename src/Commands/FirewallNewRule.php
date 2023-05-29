@@ -25,6 +25,16 @@ class FirewallNewRule extends Command
 
         $action = $this->choice('Action', ['ban', 'challenge'], 0);
 
+        $expires = $this->ask('Rule expiry (seconds) leave blank for never');
+
+        BotlickerRule::create([
+            'matches' => $matches,
+            'action' => $action,
+            'expiry' => $expires ?? null
+        ]);
+
         
+        $this->info('Rule added');
+
     }
 }

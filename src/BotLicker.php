@@ -209,6 +209,7 @@ class BotLicker
         }
         catch(\Exception $e) {
 
+            throw new \Exception("Could not get list of rules from the WAF");
         }
 
     }

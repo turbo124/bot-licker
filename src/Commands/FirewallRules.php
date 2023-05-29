@@ -29,7 +29,7 @@ class FirewallRules extends Command
 
             $table = [];
 
-            for($x=0; $x<(max(count($block), count($challenge))); $x++)
+            for($x=0; $x < (max(count($block), count($challenge))); $x++)
             {
                 $table[] = [
                     $block[$x] ?? '',

@@ -10,6 +10,8 @@ use Turbo124\BotLicker\Facades\Firewall;
 use Turbo124\BotLicker\Commands\FirewallRules;
 use Turbo124\BotLicker\BotLickerServiceProvider;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Turbo124\BotLicker\Commands\FirewallDbRules;
+use Turbo124\BotLicker\Commands\FirewallShow;
 use Turbo124\BotLicker\Providers\CloudflareProvider;
 use Turbo124\BotLicker\Providers\CloudflareProvider2;
 
@@ -60,13 +62,16 @@ class ConfigTest extends TestCase
 
         Application::starting(function ($artisan) {
             $artisan->add(app(FirewallRules::class));
+            $artisan->add(app(FirewallShow::class));
+            $artisan->add(app(FirewallDbRules::class));
         });
 
         $output = new BufferedOutput();
         
-        $x = Artisan::call('firewall:cf-rules', [], $output);
+        $x = Artisan::call('firewall:show', [], $output);
         
         echo print_r($output->fetch(),1);
+        
         // $cp = new CloudflareProvider();
         
         // echo print_r($cp->challengeIp('192.168.0.129'),1);

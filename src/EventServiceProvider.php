@@ -10,19 +10,6 @@ class EventServiceProvider extends ServiceProvider
 
     ];
 
-
-
-    // /**
-    //  * {@inheritdoc}
-    //  */
-    // public function __construct(Application $app)
-    // {
-    //     parent::__construct($app);
-
-    //     $this->listen = [];
-    // }
-
-
     /**
      * Register any events for your application.
      *

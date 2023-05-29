@@ -12,15 +12,7 @@ interface ProviderContract
 
     public function unchallengeIp(string $ip);
 
-    public function getIpInfo(string $ip);
-
-    public function getIpList(string $zone);
-
-    public function getIpCount(string $zone);
-
     public function banCountry(string $iso_3166_2);
 
     public function unbanCountry(string $iso_3166_2);
-
-    public function getRuleset();
 }

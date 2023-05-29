@@ -2,20 +2,9 @@
 
 namespace Turbo124\BotLicker\Providers;
 
-use Illuminate\Support\Carbon;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
-/**
- *
- * Create firewall rules	POST zones/<ZONE_ID>/firewall/rules	Handled as a single transaction. If there is an error, the entire operation fails.
- * List firewall rules	    GET zones/<ZONE_ID>/firewall/rules	Lists all current firewall rules. Results return paginated with 25 items per page by default. Use optional parameters to narrow results.
- * Get a firewall rule	    GET zones/<ZONE_ID>/firewall/rules/<RULE_ID>	Retrieve a single firewall rule by ID.
- * Update a firewall rule	PUT zones/<ZONE_ID>/firewall/rules/<RULE_ID>	Update a single firewall rule by ID.
- * Delete firewall rules	DELETE zones/<ZONE_ID>/firewall/rules
- * Delete a firewall rule by ID.
- *
- */
 class CloudflareProvider implements ProviderContract
 {
     /** @var string $url */
@@ -106,45 +95,6 @@ class CloudflareProvider implements ProviderContract
     }
 
     /**
-     * Get Ip Info
-     *
-     * @param  string $ip
-     * @param  array $params
-     *
-     * @return void
-     */
-    public function getIpInfo(string $ip, array $params = [])
-    {
-
-    }
-
-    /**
-     * Get Ip List
-     *
-     * @param  string $zone
-     * @param  array $params
-     *
-     * @return void
-     */
-    public function getIpList(string $zone, array $params = [])
-    {
-
-    }
-
-    /**
-     * Get Ip Count
-     *
-     * @param  string $zone
-     * @param  array $params
-     *
-     * @return void
-     */
-    public function getIpCount(string $zone, array $params = [])
-    {
-
-    }
-
-    /**
      * Ban Country
      *
      * @param  string $iso_3166_2
@@ -178,11 +128,47 @@ class CloudflareProvider implements ProviderContract
 
 
     }
+        
+    /**
+     * Get the rules in the WAF
+     *
+     * @return array
+     */
+    public function getRules(): array
+    {
+        $rules = [
+            'block' => [],
+            'managed_challenge' => [],
+        ];
 
-    public function removeRule($expression, $action)
+        $ruleset = $this->getRuleset();
+
+        if(isset($ruleset['rules'])) {
+            
+            $rules = collect($ruleset['rules'])->map(function ($rule){
+                return [
+                    $rule['action'] => explode("or",$rule['expression']),
+                ];
+            })->toArray();
+            
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Removes a rule from the Firewall
+     *
+     * @param  string $expression
+     * @param  string $action
+     * 
+     * @return bool
+     */
+    public function removeRule($expression, $action): bool
     {
 
         $ruleset = $this->getRuleset();
+        
         $rule = false;
 
         if(isset($ruleset['rules'])) {
@@ -196,10 +182,19 @@ class CloudflareProvider implements ProviderContract
         }
 
     }
-
+    
+    /**
+     * Adds a rule from the Firewall
+     *
+     * @param  string $expression
+     * @param  string $action
+     * 
+     * @return bool
+     */
     public function addRule($expression, $action)
     {
         $ruleset = $this->getRuleset();
+
         $rule = false;
         
         if(isset($ruleset['rules'])) {
@@ -208,8 +203,6 @@ class CloudflareProvider implements ProviderContract
             });
         }
 
-        echo print_r($rule, true);
-
         if($rule) {
             return $this->updateRuleExpression($ruleset, $this->addExpression($rule, $expression), $rule);
         }
@@ -217,7 +210,16 @@ class CloudflareProvider implements ProviderContract
         return $this->addRuleParent($ruleset, $expression, $action);
     }
 
-
+    
+    /**
+     * Adds a new rule
+     *
+     * @param  array $ruleset
+     * @param  string $expression
+     * @param  string $action
+     * 
+     * @return bool
+     */
     public function addRuleParent(array $ruleset, string $expression, string $action)
     {
 
@@ -230,6 +232,7 @@ class CloudflareProvider implements ProviderContract
         ];
 
         $response =
+        
         Http::withHeaders($this->getHeaders())->post($cloudflare_endpoint, $rule);
 
         if($response->successful()) {
@@ -239,17 +242,25 @@ class CloudflareProvider implements ProviderContract
         throw new \Exception("Could not add rule {$action} => " . $response->body());
 
     }
-
-    public function updateRuleExpression(array $ruleset, string $expression, array $rule)
+    
+    /**
+     * Updates the rules expression
+     *
+     * @param  array $ruleset
+     * @param  string $expression
+     * @param  array $rule
+     * 
+     * @return bool
+     */
+    public function updateRuleExpression(array $ruleset, string $expression, array $rule): bool
     {
         $rule['expression'] = $expression;
 
         $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/rulesets/{$ruleset['id']}/rules/{$rule['id']}";
 
         $response =
-        Http::withHeaders($this->getHeaders())->patch($cloudflare_endpoint, $rule);
 
-        echo print_r($response->body(), true);  
+        Http::withHeaders($this->getHeaders())->patch($cloudflare_endpoint, $rule);
 
         if($response->successful()) {
             return true;
@@ -258,7 +269,15 @@ class CloudflareProvider implements ProviderContract
         throw new \Exception("Could not get rules " . $response->body());
 
     }
-
+    
+    /**
+     * Adds a expression to the rule
+     *
+     * @param  array $rule
+     * @param  string $expression
+     * 
+     * @return string
+     */
     public function addExpression($rule, $expression): string
     {
         
@@ -267,7 +286,15 @@ class CloudflareProvider implements ProviderContract
         })->push($expression)->implode("or");
 
     }
-
+    
+    /**
+     * Removes a expression to the rule
+     *
+     * @param  array $rule
+     * @param  string $expression
+     * 
+     * @return string
+     */
     public function removeExpression($rule, $expression)
     {
         
@@ -276,8 +303,13 @@ class CloudflareProvider implements ProviderContract
         })->implode("or");
 
     }
-
-    public function getRuleset()
+    
+    /**
+     * Returns the custom firewall ruleset
+     *
+     * @return array
+     */
+    public function getRuleset(): array
     {
         $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/rulesets";
 

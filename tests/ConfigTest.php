@@ -69,9 +69,9 @@ class ConfigTest extends TestCase
         // echo print_r($output->fetch(),1);
         $cp = new CloudflareProvider();
         
-        echo print_r($cp->unchallengeIp('192.168.0.125'),1);
+        // echo print_r($cp->unchallengeIp('192.168.0.125'),1);
 
-        // echo print_r($cp->getRuleset());
+        echo print_r($cp->getRules());
         
 
 

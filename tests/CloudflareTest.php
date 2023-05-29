@@ -3,6 +3,7 @@
 namespace Turbo124\BotLicker\Tests;
 
 use Illuminate\Support\Facades\Http;
+use Turbo124\BotLicker\BotLicker;
 use Turbo124\BotLicker\Facades\Firewall;
 
 class CloudflareTest extends BotLickerTestCase
@@ -70,6 +71,21 @@ class CloudflareTest extends BotLickerTestCase
 
         $this->assertIsArray($rules);
 
+    }
+
+    public function testBanIp()
+    {
+
+        Http::fake([
+            'api.cloudflare.com/client/v4/*' => Http::sequence()
+                                    ->push($this->ruleset_response, 200)
+                                    ->push($this->ruleset, 200)
+                                    ->push($this->ruleset, 200),
+        ]);
+
+        $result = Firewall::ban('192.168.0.7');
+
+        $this->assertInstanceOf(BotLicker::class, $result);
     }
 }
 

@@ -27,7 +27,7 @@ class FirewallNewRule extends Command
 
         $expires = $this->ask('Rule expiry (seconds) leave blank for never');
 
-        BotlickerRule::create([
+        BotlickerRule::on(config('bot-licker.db_connection'))->create([
             'matches' => $matches,
             'action' => $action,
             'expiry' => $expires ?? null

@@ -11,7 +11,7 @@ class FirewallRules extends Command
     /**
      * @var string
      */
-    protected $name = 'firewall:cf-rules {--ban=} {--challenge=} {--unban=} {--unchallenge}';
+    protected $signature = 'firewall:cf-rules {--ban} {--challenge} {--unban} {--unchallenge}';
 
     /**
      * @var string

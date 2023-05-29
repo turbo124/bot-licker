@@ -11,6 +11,7 @@ use Turbo124\BotLicker\EventServiceProvider;
 use Turbo124\BotLicker\Commands\FirewallShow;
 use Turbo124\BotLicker\Commands\FirewallRules;
 use Turbo124\BotLicker\Commands\FirewallDbRules;
+use Turbo124\BotLicker\Commands\FirewallNewRule;
 use Turbo124\BotLicker\Http\Middleware\QueryLog;
 
 class BotLickerServiceProvider extends ServiceProvider
@@ -30,7 +31,8 @@ class BotLickerServiceProvider extends ServiceProvider
             $this->commands([
                 FirewallRules::class,
                 FirewallShow::class,
-                FirewallDbRules::class
+                FirewallDbRules::class,
+                FirewallNewRule::class,
             ]);
         }
 

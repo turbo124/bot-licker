@@ -19,6 +19,7 @@ return [
         'api_key' => env('CLOUDFLARE_API_KEY'),
         'email'   => env('CLOUDFLARE_EMAIL'),
         'zone_id' => env('CLOUDFLARE_ZONE_ID'),
+        'account_id' => env('CLOUDFLARE_ACCOUNT_ID'),
     ],
 
     /**

@@ -22,5 +22,5 @@ interface ProviderContract
 
     public function unbanCountry(string $iso_3166_2);
 
-    public function getRules();
+    public function getRuleset();
 }

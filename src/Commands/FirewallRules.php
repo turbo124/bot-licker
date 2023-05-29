@@ -10,7 +10,7 @@ class FirewallRules extends Command
     /**
      * @var string
      */
-    protected $name = 'firewall:waf-rules';
+    protected $name = 'firewall:cf-rules';
 
     /**
      * @var string
@@ -21,17 +21,25 @@ class FirewallRules extends Command
     {
 
         $bot = new BotLicker();
+
         $rules = $bot->getRules();
+          
+            $block = $rules[0]['block'];
+            $challenge = $rules[1]['managed_challenge'];
 
-        $collect_rules = collect($rules)->map(function ($r){
-            
-            return ['description' => $r['description'], 'expression' => $r['expression']];
+            $table = [];
 
-        })->toArray();
+            for($x=0; $x<(max(count($block), count($challenge))); $x++)
+            {
+                $table[] = [
+                    $block[$x] ?? '',
+                    $challenge[$x] ?? '',
+                ];
+            }
 
         $this->table(
-            ['Description', 'Expression'],
-            $collect_rules
+            ['Block', 'Challenge'],
+            $table
         );
 
     }

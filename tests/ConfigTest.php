@@ -64,14 +64,14 @@ class ConfigTest extends TestCase
 
         $output = new BufferedOutput();
         
-        // $x = Artisan::call('firewall:rules', [], $output);
+        $x = Artisan::call('firewall:cf-rules', [], $output);
         
-        // echo print_r($output->fetch(),1);
-        $cp = new CloudflareProvider();
+        echo print_r($output->fetch(),1);
+        // $cp = new CloudflareProvider();
         
-        // echo print_r($cp->unchallengeIp('192.168.0.125'),1);
+        // echo print_r($cp->challengeIp('192.168.0.129'),1);
 
-        echo print_r($cp->getRules());
+        // echo print_r($cp->getRules());
         
 
 

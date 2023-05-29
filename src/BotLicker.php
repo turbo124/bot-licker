@@ -198,15 +198,13 @@ class BotLicker
     /**
      * Get the existing rules that are in the WAF
      *
-     * @return void
+     * @return array
      */
-    public function getRules(): mixed
+    public function getRules(): array
     {
         try {
 
-            $this->getProvider()->getRules();
-
-            return $this;
+            return $this->getProvider()->getRules();
 
         }
         catch(\Exception $e) {

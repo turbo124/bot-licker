@@ -11,7 +11,7 @@ class FirewallNewRule extends Command
     /**
      * @var string
      */
-    protected $name = 'firewall:rule';
+    protected $signature = 'firewall:rule';
 
     /**
      * @var string

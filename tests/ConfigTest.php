@@ -59,19 +59,16 @@ class ConfigTest extends TestCase
     public function testPrintRules()
     {
 
-
         Application::starting(function ($artisan) {
             $artisan->add(app(FirewallRules::class));
-            $artisan->add(app(FirewallShow::class));
-            $artisan->add(app(FirewallDbRules::class));
         });
 
         $output = new BufferedOutput();
         
-        $x = Artisan::call('firewall:show', [], $output);
+        $x = Artisan::call('firewall:cf-rules', [], $output);
         
         echo print_r($output->fetch(),1);
-        
+
         // $cp = new CloudflareProvider();
         
         // echo print_r($cp->challengeIp('192.168.0.129'),1);

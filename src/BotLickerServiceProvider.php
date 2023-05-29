@@ -36,7 +36,6 @@ class BotLickerServiceProvider extends ServiceProvider
             ]);
         }
 
-
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
                 

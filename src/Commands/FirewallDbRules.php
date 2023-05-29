@@ -11,7 +11,7 @@ class FirewallDbRules extends Command
     /**
      * @var string
      */
-    protected $name = 'firewall:db-rules';
+    protected $name = 'firewall:waf';
 
     /**
      * @var string

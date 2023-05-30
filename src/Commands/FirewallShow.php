@@ -11,7 +11,7 @@ class FirewallShow extends Command
     /**
      * @var string
      */
-    protected $name = 'firewall:show --{delete=}';
+    protected $signature = 'firewall:show {--delete}';
 
     /**
      * @var string

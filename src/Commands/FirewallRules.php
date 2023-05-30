@@ -71,12 +71,6 @@ class FirewallRules extends Command
             ];
         }
 
-        echo print_r(
-$this->table(
-    ['Block', 'Challenge'],
-    $table
-)
-)
         $this->table(
             ['Block', 'Challenge'],
             $table

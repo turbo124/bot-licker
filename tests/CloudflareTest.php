@@ -103,7 +103,10 @@ class CloudflareTest extends BotLickerTestCase
 
 
         $this->artisan('firewall:cf-rules')
-            ->expectsTable(['Block', 'Challenge'],[]);
+            ->expectsTable(['Block', 'Challenge'],
+            [
+                ['cf.zone.name eq example.com', '']
+            ]);
     }
 
 }

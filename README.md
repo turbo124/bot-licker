@@ -11,7 +11,7 @@
 
 This may work for sites with low levels of traffic, but when dealing with a large number of requests it becomes ineffective.
 
-Enter the BotLicker where you can send your WAF rules direct to Cloudflare for instant implementation.
+Enter BotLicker where you can send your WAF rules direct to Cloudflare for instant implementation.
 
 ### Installation
 
@@ -27,6 +27,7 @@ In your .env file, enter in the following environment variables:
 CLOUDFLARE_API_KEY="your_cloudflare_API_KEY_that_has_permission to read/write/edit WAF rules"
 CLOUDFLARE_EMAIL="your_cloudflare_email_address"
 CLOUDFLARE_ZONE_ID="your_zone_id"
+CLOUDFLARE_ACCOUNT_ID="your_account_id"
 ```
 
 ### Usage

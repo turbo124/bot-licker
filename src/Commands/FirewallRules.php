@@ -20,10 +20,6 @@ class FirewallRules extends Command
 
     public function handle()
     {
-
-        $bot = new BotLicker();
-
-        $rules = $bot->getRules();
         
         if ($this->option('ban')) {
 
@@ -58,19 +54,29 @@ class FirewallRules extends Command
             $this->info("Challenge removed for ".$this->option('unchallenge'));
         }
 
-            $block = $rules[0]['block'];
-            $challenge = $rules[1]['managed_challenge'];
+        $bot = new BotLicker();
 
-            $table = [];
+        $rules = $bot->getRules();
 
-            for($x=0; $x < (max(count($block), count($challenge))); $x++)
-            {
-                $table[] = [
-                    $block[$x] ?? '',
-                    $challenge[$x] ?? '',
-                ];
-            }
+        $block = $rules[0]['block'] ?? [];
+        $challenge = $rules[1]['managed_challenge'] ?? [];
 
+        $table = [];
+
+        for($x=0; $x < (max(count($block), count($challenge))); $x++)
+        {
+            $table[] = [
+                $block[$x] ?? '',
+                $challenge[$x] ?? '',
+            ];
+        }
+
+        echo print_r(
+$this->table(
+    ['Block', 'Challenge'],
+    $table
+)
+)
         $this->table(
             ['Block', 'Challenge'],
             $table

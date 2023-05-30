@@ -87,5 +87,24 @@ class CloudflareTest extends BotLickerTestCase
 
         $this->assertInstanceOf(BotLicker::class, $result);
     }
+
+
+
+
+    public function testShowWafRules(): void
+    {
+
+
+        Http::fake([
+            'api.cloudflare.com/client/v4/*' => Http::sequence()
+                                    ->push($this->ruleset_response, 200)
+                                    ->push($this->ruleset, 200),
+        ]);
+
+
+        $this->artisan('firewall:cf-rules')
+            ->expectsTable(['Block', 'Challenge'],[]);
+    }
+
 }
 

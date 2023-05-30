@@ -11,7 +11,7 @@ class FirewallDbRules extends Command
     /**
      * @var string
      */
-    protected $name = 'firewall:waf {--delete=}';
+    protected $signature = 'firewall:waf {--delete=}';
 
     /**
      * @var string

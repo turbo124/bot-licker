@@ -2,9 +2,10 @@
 
 namespace Turbo124\BotLicker\Tests;
 
-use Illuminate\Support\Facades\Http;
 use Turbo124\BotLicker\BotLicker;
+use Illuminate\Support\Facades\Http;
 use Turbo124\BotLicker\Facades\Firewall;
+use Turbo124\BotLicker\Models\BotlickerBan;
 
 class CloudflareTest extends BotLickerTestCase
 {
@@ -108,6 +109,28 @@ class CloudflareTest extends BotLickerTestCase
                 ['cf.zone.name eq example.com', '']
             ]);
     }
+
+
+    public function testFirewallShowAndDeleteCommand()
+    {
+
+
+        Http::fake([
+            'api.cloudflare.com/client/v4/*' => Http::sequence()
+                                    ->push($this->ruleset_response, 200)
+                                    ->push($this->ruleset_response, 200)
+                                    ->push($this->ruleset, 200),
+        ]);
+
+        $bb = BotlickerBan::create([
+            'ip' => '127.0.0.5',
+        ]);
+
+        $this->artisan('firewall:show',['--delete' =>$bb->id])
+            ->expectsOutput('Deleted Ban, and removed from firewall');
+
+    }
+
 
 }
 

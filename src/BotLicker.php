@@ -83,6 +83,7 @@ class BotLicker
         }
         catch(\Exception $e) {
 
+            throw new \Exception("Could not unban IP address {$ip} " . $e->getMessage(), 400);
         }
 
     }

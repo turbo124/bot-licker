@@ -181,6 +181,7 @@ class CloudflareProvider implements ProviderContract
             return $this->updateRuleExpression($ruleset, $this->removeExpression($rule, $expression), $rule);
         }
 
+        return true;
     }
     
     /**

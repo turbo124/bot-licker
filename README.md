@@ -97,6 +97,38 @@ Currently only Cloudflare is supported, however you can easily implement the Pro
 Firewall::setProvider(OtherWAF::class)->ban('101.1.1.254', now()->addMinutes(5));
 ```
 
+## Console commands
+
+If you prefer to ban from the console you can use these commands:
+
+- Firewall rules:
+
+```
+php artisan firewall:rule
+```
+
+- Delete rule from WAF
+
+```
+php artisan firewall:waf --delete=
+```
+
+- Ban from the command line:
+
+```
+firewall:cf-rules {--ban} {--challenge} {--unban} {--unchallenge}
+```
+
+```
+php artisan cf-rules --ban=10.1.1.1
+```
+
+- Show bans
+
+```
+php artisan firewall:show
+```
+
 ### TODO:
 Currently the package perform simply bans/unbans etc. In the next iteration, ban duration will be also be added in order for some rules to be removed after X timeperiod. ie
 

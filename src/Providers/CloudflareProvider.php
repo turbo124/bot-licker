@@ -171,7 +171,8 @@ class CloudflareProvider implements ProviderContract
         
         $rule = false;
 
-        if(isset($ruleset['rules'])) {
+       if(isset($ruleset['rules']))
+        {
             $rule = collect($ruleset['rules'])->first(function ($rules) use ($action) {
                 return $rules['action'] == $action;
             });
@@ -244,6 +245,25 @@ class CloudflareProvider implements ProviderContract
 
     }
     
+    public function deleteRule($ruleset, $rule) {
+
+        $ruleset_id = $ruleset['id'];
+        $rule_id = $rule['id'];
+
+        $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/rulesets/{$ruleset_id}/rules/{$rule_id}";
+
+        $response =
+
+        Http::withHeaders($this->getHeaders())->delete($cloudflare_endpoint, []);
+
+        if($response->successful()) {
+            return true;
+        }
+
+        throw new \Exception("Could not get rules " . $response->body());
+
+    }
+
     /**
      * Updates the rules expression
      *
@@ -256,6 +276,9 @@ class CloudflareProvider implements ProviderContract
     public function updateRuleExpression(array $ruleset, string $expression, array $rule): bool
     {
         $rule['expression'] = $expression;
+
+        if(strlen($expression) == 0)
+            return $this->deleteRule($ruleset, $rule);
 
         $cloudflare_endpoint = "{$this->url}zones/{$this->getZone()}/rulesets/{$ruleset['id']}/rules/{$rule['id']}";
 

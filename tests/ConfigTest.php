@@ -2,6 +2,7 @@
 
 namespace Turbo124\BotLicker\Tests;
 
+use Turbo124\BotLicker\BotLicker;
 use Turbo124\BotLicker\Facades\Firewall;
 
 class ConfigTest extends BotLickerTestCase
@@ -42,54 +43,63 @@ class ConfigTest extends BotLickerTestCase
     /** @test */
     
 
-    // public function testAddIp()
-    // {
+    public function testAddIp()
+    {
 
-    //     $bot = new BotLicker();
-    //     $result = $bot->ban('101.55.31.19');
+        $bot = new BotLicker();
+        $result = $bot->ban('101.55.31.19');
 
-    //     $this->assertTrue($result);
-    // }
+        $this->assertTrue($result->action_status);
+    }
 
-    // public function testRemoveIp()
-    // {
-    //     $bot = new BotLicker();
-    //     $result = $bot->unban('101.55.31.120');
+    public function testRemoveIp()
+    {
+        $bot = new BotLicker();
+        $result = $bot->unban('101.55.31.19');
 
-    //     $this->assertTrue($result);
-    // }
+        $this->assertTrue($result->action_status);
+    }
 
-    // public function testAddChallengeIP()
-    // {
-    //     $bot = new BotLicker();
-    //     $result = $bot->challenge('101.55.32.119');
+    public function testAddChallengeIP()
+    {
+        $bot = new BotLicker();
+        $result = $bot->challenge('101.55.32.119');
 
-    //     $this->assertTrue($result);
-    // }
+        $this->assertTrue($result->action_status);
+    }
 
-    // public function testRemoveChallengeIP()
-    // {
-    //     $bot = new BotLicker();
-    //     $result = $bot->challenge('101.55.32.120');
+    public function testRemoveChallengeIP()
+    {
+        $bot = new BotLicker();
+        $result = $bot->unchallenge('101.55.32.119');
 
-    //     $this->assertTrue($result);
-    // }
+        $this->assertTrue($result->action_status);
+    }
 
-    // public function testAddCountryBan()
-    // {
-    //     $bot = new BotLicker();
-    //     $result = $bot->banCountry('DE');
+    public function testRemoveChallengeIP2()
+    {
+        $bot = new BotLicker();
+        $result = $bot->unchallenge('101.55.32.120');
 
-    //     $this->assertTrue($result);
-    // }
+        $this->assertTrue($result->action_status);
+    }
 
-    // public function testAddCountryUnBan()
-    // {
-    //     $bot = new BotLicker();
-    //     $result = $bot->unbanCountry('DE');
+    public function testAddCountryBan()
+    {
+        $bot = new BotLicker();
+        $result = $bot->banCountry('DE');
 
-    //     $this->assertTrue($result);
-    // }
+        $this->assertTrue($result->action_status);
+    }
+
+    public function testAddCountryUnBan()
+    {
+        $bot = new BotLicker();
+        $result = $bot->unbanCountry('DE');
+
+
+        $this->assertTrue($result->action_status);
+    }
 
 
 }

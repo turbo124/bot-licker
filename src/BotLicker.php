@@ -34,6 +34,8 @@ class BotLicker
      * */
     protected string $action = '';
     
+    public bool $action_status = false;
+
     /**
      * Ban a IP address 
      *
@@ -49,7 +51,7 @@ class BotLicker
 
         try{
 
-            $this->preFlight()->getProvider()->banIp($ip);    
+            $this->action_status = $this->preFlight()->getProvider()->banIp($ip);    
 
             $this->expires($expiry);
 
@@ -76,7 +78,7 @@ class BotLicker
 
         try {
 
-            $this->preFlight()->getProvider()->unbanIp($ip);
+            $this->action_status = $this->preFlight()->getProvider()->unbanIp($ip);
     
             return $this;
 
@@ -103,7 +105,7 @@ class BotLicker
 
         try {
         
-            $this->preFlight()->getProvider()->challengeIp($ip);
+            $this->action_status = $this->preFlight()->getProvider()->challengeIp($ip);
             
             $this->expires($expiry);
 
@@ -129,7 +131,7 @@ class BotLicker
 
         try {
         
-            $this->preFlight()->getProvider()->unchallengeIp($ip);
+            $this->action_status = $this->preFlight()->getProvider()->unchallengeIp($ip);
         
             return $this;
 
@@ -158,7 +160,7 @@ class BotLicker
 
         try {
             
-            $this->preFlight()->getProvider()->banCountry($iso_3166_2);
+            $this->action_status = $this->preFlight()->getProvider()->banCountry($iso_3166_2);
     
             $this->expires($expiry);
 
@@ -166,6 +168,8 @@ class BotLicker
 
         }
         catch(\Exception $e) {
+
+            throw new \Exception("Could not unban {$iso_3166_2}");
 
         }
 
@@ -185,12 +189,14 @@ class BotLicker
 
         try {
 
-            $this->preFlight()->getProvider()->unbanCountry($iso_3166_2);
+            $this->action_status = $this->preFlight()->getProvider()->unbanCountry($iso_3166_2);
     
             return $this;
 
         }
         catch(\Exception $e) {
+
+            throw new \Exception("Could not unban {$iso_3166_2}");
 
         }
 
